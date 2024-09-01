@@ -6,51 +6,62 @@
 
 <script>
 export default {
-  name: 'Timer',
+  name: "Timer",
   data() {
     return {
-      time: 0,
+      startTime: 0,
+      elapsedTime: 0,
       timer: null,
       isRunning: false,
+      isStopped: false,
     };
   },
   methods: {
     start() {
-      this.isRunning = true;
-      this.timer = setInterval(() => {
-        this.time++;
-      }, 1000);
+      if (!this.isRunning) {
+        // Use Date.now() to get the current time in milliseconds, more accurate
+        this.isStopped = false;
+        this.isRunning = true;
+        this.startTime = Date.now() - this.elapsedTime * 1000;
+        this.timer = setInterval(() => {
+          this.elapsedTime = (Date.now() - this.startTime) / 1000;
+        }, 10);
+      }
     },
     stop() {
+      this.isStopped = true;
       this.isRunning = false;
       clearInterval(this.timer);
     },
     resetTimer() {
-      this.time = 0;
+      this.elapsedTime = 0;
       this.stop();
     },
-    onPressEvent(event) {
-      if (event.code === 'Space') {
+    onUpEvent(event) {
+      if (event.code === "Space") {
+        if (this.isStopped) {
+          this.resetTimer();
+        }
         if (this.isRunning) {
           this.stop();
-        } else {
+        } else{
           this.start();
         }
       }
     },
   },
   mounted() {
-    window.addEventListener('keydown', this.onPressEvent);
+    window.addEventListener("keyup", this.onUpEvent);
   },
   beforeUnmount() {
-    window.removeEventListener('keydown', this.onPressEvent);
+    window.removeEventListener("keyup", this.onUpEvent);
   },
 };
 </script>
 
 <template>
   <h1 class="text-2xl">Timer</h1>
-  <h2 class="text-xl">Time: {{ time }} seconds</h2>
+  <h2 class="text-xl">Time: {{ elapsedTime.toFixed(2) }} seconds</h2>
   <div>
     <p>Press the spacebar to start and stop the timer.</p>
   </div>
