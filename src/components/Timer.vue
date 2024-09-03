@@ -14,6 +14,7 @@ export default {
       timer: null,
       isRunning: false,
       isStopped: false,
+      isInspection: true,
     };
   },
   methods: {
