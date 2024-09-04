@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cubing": "^0.51.1",
     "vue": "^3.4.37"
   },
   "devDependencies": {
