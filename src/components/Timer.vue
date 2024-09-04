@@ -15,6 +15,7 @@ export default {
       isRunning: false,
       isStopped: false,
       isInspection: true,
+      times: [],
     };
   },
   methods: {
@@ -45,6 +46,7 @@ export default {
         }
         if (this.isRunning) {
           this.stop();
+          this.times.push(this.elapsedTime);
         } else{
           this.start();
         }
@@ -67,4 +69,8 @@ export default {
     <p>Press the spacebar to start and stop the timer.</p>
   </div>
   <button @click="resetTimer" :disabled="isRunning">Reset</button>
+  <h2 v-if="times.length > 0">Times:</h2>
+  <ul>
+    <li v-for="(time, index) in times" :key="index">{{ time.toFixed(2) }} seconds</li>
+  </ul>
 </template>
