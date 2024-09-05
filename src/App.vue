@@ -14,30 +14,32 @@
 </style>
 
 <script setup>
-import { ref } from "vue";
 import Timer from "./components/Timer.vue";
-
-const showTimer = ref(false);
-const toggleTimer = () => {
-  showTimer.value = !showTimer.value;
-};
 </script>
 
 <template>
-  <div class="flex items-center justify-center">
-    <div class="py-6">
-      <label class="switch">
-        Show Timer
-        <input type="checkbox" @click="toggleTimer" />
-      </label>
-    </div>
-  </div>
-  <div class="flex justify-center py-6">
-    <div v-if="showTimer">
-      <Timer />
-    </div>
-    <div v-if="!showTimer">
-      <p>Test</p>
+  <div className="container min-w-full min-h-full flex flex-col items-center">
+    <div role="tablist" className="container mt-6 tabs tabs-bordered">
+      <input
+        type="radio"
+        name="my_tabs_1"
+        role="tab"
+        className="tab text-xl"
+        aria-label="Timer"
+        defaultChecked
+      />
+      <div role="tabpanel" className="tab-content p-10">
+        <Timer />
+      </div>
+
+      <input
+        type="radio"
+        name="my_tabs_1"
+        role="tab"
+        className="tab text-xl"
+        aria-label="Data"
+      />
+      <div role="tabpanel" className="tab-content p-10"></div>
     </div>
   </div>
 </template>
