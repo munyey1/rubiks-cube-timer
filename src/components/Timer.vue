@@ -5,7 +5,7 @@
 </style>
 
 <script>
-import { randomScrambleForEvent } from 'https://cdn.cubing.net/js/cubing/scramble';
+import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 
 export default {
   name: "Timer",
@@ -14,7 +14,7 @@ export default {
       startTime: 0,
       elapsedTime: 0,
       timer: null,
-      scramble: '',
+      scramble: "",
       isRunning: false,
       isStopped: false,
       isInspection: true,
@@ -49,16 +49,17 @@ export default {
         if (this.isRunning) {
           this.stop();
           this.getScramble();
-          this.times.push({time: this.elapsedTime, scramble: this.scramble});
-        } else{
+          this.times.push({ time: this.elapsedTime, scramble: this.scramble });
+        } else {
           this.start();
         }
       }
     },
-    async getScramble(){
-      const scramble = await randomScrambleForEvent('333');
+    async getScramble() {
+      const scramble = await randomScrambleForEvent("333");
       this.scramble = scramble.toString();
-    }
+      console.log(this.scramble);
+    },
   },
   mounted() {
     window.addEventListener("keyup", this.onUpEvent);
@@ -71,17 +72,27 @@ export default {
 </script>
 
 <template>
-  <h1 class="text-2xl">Scramble:</h1>
-  <h1 class="text-2xl">{{ scramble }}</h1>
-  <h2 class="text-xl">Time: {{ elapsedTime.toFixed(2) }} seconds</h2>
-  <div>
-    <p>Press the spacebar to start and stop the timer.</p>
+  <div class="flex flex-col items-center justify-items-center">
+    <div class="pb-6">
+      <h1 class="text-2xl">Scramble: </h1>
+      <h1 class="text-2xl">{{ scramble }}</h1>
+    </div>
+    <div>
+      <h2 class="text-xl">Time: {{ elapsedTime.toFixed(2) }} seconds</h2>
+    </div>
+    <div class="pb-2">
+      <p>Press the spacebar to start and stop the timer.</p>
+    </div>
+    <div>
+      <button @click="resetTimer" :disabled="isRunning">Reset</button>
+    </div>
+    <div>
+      <h2 v-if="times.length > 0">Times:</h2>
+      <ul>
+      <li v-for="(time, index) in times" :key="index">
+        {{ time.time.toFixed(2) }} seconds - {{ time.scramble }}
+      </li>
+    </ul>
+    </div>
   </div>
-  <button @click="resetTimer" :disabled="isRunning">Reset</button>
-  <h2 v-if="times.length > 0">Times:</h2>
-  <ul>
-    <li v-for="(time, index) in times" :key="index">
-      {{ time.time.toFixed(2) }} seconds - {{ time.scramble }}
-    </li>
-  </ul>
 </template>

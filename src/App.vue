@@ -14,9 +14,30 @@
 </style>
 
 <script setup>
-import Timer from './components/Timer.vue'
+import { ref } from "vue";
+import Timer from "./components/Timer.vue";
+
+const showTimer = ref(false);
+const toggleTimer = () => {
+  showTimer.value = !showTimer.value;
+};
 </script>
 
 <template>
-  <Timer/>
+  <div class="flex items-center justify-center">
+    <div class="py-6">
+      <label class="switch">
+        Show Timer
+        <input type="checkbox" @click="toggleTimer" />
+      </label>
+    </div>
+  </div>
+  <div class="flex justify-center py-6">
+    <div v-if="showTimer">
+      <Timer />
+    </div>
+    <div v-if="!showTimer">
+      <p>Test</p>
+    </div>
+  </div>
 </template>
