@@ -78,40 +78,44 @@ export default {
 </script>
 
 <template>
-  <div class="container min-w-full flex flex-col items-center">
-    <h1 class="text-2xl">Scramble:</h1>
-    <div class="mb-6">
-      <h1 class="text-2xl">{{ scramble }}</h1>
-    </div>
-    <twisty-player
-      :alg="scramble"
-      background="none"
-      controlPanel="none"
-      visualization="2D"
-    ></twisty-player>
+  <div class="container grid grid-cols-3">
     <div>
-      <h2 class="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
+      <h2 v-if="times.length > 0" className="mb-2">Times:</h2>
+      <div>
+        <ul>
+          <li v-for="(time, index) in times" :key="index">
+            {{ time.time }} seconds - {{ time.scramble }}
+          </li>
+        </ul>
+      </div>
     </div>
-    <div className="my-2">
-      <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
-      <button className="btn" @click="dnf" :disabled="isRunning">DNF</button>
-    </div>
-    <div className="mb-4">
-      <button
-        className="btn btn-outline"
-        @click="resetTimes"
-        :disabled="isRunning"
-      >
-        Reset Times
-      </button>
-    </div>
-    <h2 v-if="times.length > 0" className="mb-2">Times:</h2>
-    <div>
-      <ul>
-        <li v-for="(time, index) in times" :key="index">
-          {{ time.time }} seconds - {{ time.scramble }}
-        </li>
-      </ul>
+    <div class="container span-2 min-w-full flex flex-col items-center">
+      <h1 class="text-2xl">Scramble:</h1>
+      <div class="mb-6">
+        <h1 class="text-2xl">{{ scramble }}</h1>
+      </div>
+      <twisty-player
+        :alg="scramble"
+        background="none"
+        controlPanel="none"
+        visualization="2D"
+      ></twisty-player>
+      <div>
+        <h2 class="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
+      </div>
+      <div className="my-2">
+        <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
+        <button className="btn" @click="dnf" :disabled="isRunning">DNF</button>
+      </div>
+      <div className="mb-4">
+        <button
+          className="btn btn-outline"
+          @click="resetTimes"
+          :disabled="isRunning"
+        >
+          Reset Times
+        </button>
+      </div>
     </div>
   </div>
 </template>
