@@ -1,8 +1,4 @@
-<style scoped>
-.read-the-docs {
-  color: #888;
-}
-</style>
+<style scoped></style>
 
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
@@ -28,7 +24,9 @@ export default {
         this.isRunning = true;
         this.startTime = Date.now() - this.elapsedTime * 1000;
         this.timer = setInterval(() => {
-          this.elapsedTime = ((Date.now() - this.startTime) / 1000).toFixed(2).toString();
+          this.elapsedTime = ((Date.now() - this.startTime) / 1000)
+            .toFixed(2)
+            .toString();
         }, 10);
       }
     },
@@ -81,12 +79,16 @@ export default {
 
 <template>
   <div class="container min-w-full flex flex-col items-center">
-    <div class="pb-6">
-      <h1 class="text-2xl">
-        Scramble:
-        {{ scramble }}
-      </h1>
+    <h1 class="text-2xl">Scramble:</h1>
+    <div class="mb-6">
+      <h1 class="text-2xl">{{ scramble }}</h1>
     </div>
+    <twisty-player
+      :alg="scramble"
+      background="none"
+      controlPanel="none"
+      visualization="2D"
+    ></twisty-player>
     <div>
       <h2 class="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
     </div>
@@ -94,7 +96,7 @@ export default {
       <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
       <button className="btn" @click="dnf" :disabled="isRunning">DNF</button>
     </div>
-    <div>
+    <div className="mb-4">
       <button
         className="btn btn-outline"
         @click="resetTimes"
@@ -103,8 +105,8 @@ export default {
         Reset Times
       </button>
     </div>
+    <h2 v-if="times.length > 0" className="mb-2">Times:</h2>
     <div>
-      <h2 v-if="times.length > 0">Times:</h2>
       <ul>
         <li v-for="(time, index) in times" :key="index">
           {{ time.time }} seconds - {{ time.scramble }}
