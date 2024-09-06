@@ -18,7 +18,7 @@ import Timer from "./components/Timer.vue";
 </script>
 
 <template>
-  <div className="container min-w-full min-h-full flex flex-col items-center">
+  <div className="font-mono container min-w-full min-h-full flex flex-col items-center">
     <div role="tablist" className="container min-w-full mt-6 tabs tabs-bordered">
       <input
         type="radio"

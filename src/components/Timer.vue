@@ -110,7 +110,7 @@ export default {
 
 <template>
   <div className="container min-w-full grid grid-cols-3">
-    <div v-if="isRunning" class="dark-overlay">
+    <div v-if="isRunning || (!isInspection && !isRunning)" class="dark-overlay">
     </div>
     <div className="container ml-10 pr-6">
       <button
@@ -121,7 +121,7 @@ export default {
         Reset Times
       </button>
       <h2 v-if="times.length > 0" className="text-lg mb-1">Times:</h2>
-      <div>
+      <div className="pr-20">
         <ul>
           <li v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
@@ -130,16 +130,14 @@ export default {
       </div>
     </div>
     <div className="container span-2 min-w-full flex flex-col items-center">
-      <div className="mb-6">
-        <h1 className="text-2xl">{{ scramble }}</h1>
-      </div>
-      <h2 className="text-5xl mt-40" v-if="!isInspection && !isRunning">
+      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
+      <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
       </h2>
-      <h2 className="text-5xl mt-40 z-10" v-if="isRunning || isInspection">
+      <h2 className="text-5xl mt-36 z-10" v-if="isRunning || isInspection">
         Time:
       </h2>
-      <h2 className="text-5xl mb-40 z-10">{{ elapsedTime }} seconds</h2>
+      <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
       <div className="my-4">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
