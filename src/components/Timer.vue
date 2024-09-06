@@ -59,6 +59,11 @@ export default {
     async getScramble() {
       const scramble = await randomScrambleForEvent("333");
       this.scramble = scramble.toString();
+      this.updateTwistyPlayer();
+    },
+    updateTwistyPlayer() {
+      const twistyPlayer = this.$refs.twistyPlayer;
+      twistyPlayer.alg = this.scramble;
     },
     plus2() {
       this.times[this.times.length - 1].time += "(+2)";
@@ -78,8 +83,8 @@ export default {
 </script>
 
 <template>
-  <div class="container grid grid-cols-3">
-    <div>
+  <div className="container min-w-full grid grid-cols-3">
+    <div className="container ml-10 pr-6">
       <h2 v-if="times.length > 0" className="mb-2">Times:</h2>
       <div>
         <ul>
@@ -89,19 +94,19 @@ export default {
         </ul>
       </div>
     </div>
-    <div class="container span-2 min-w-full flex flex-col items-center">
-      <h1 class="text-2xl">Scramble:</h1>
-      <div class="mb-6">
-        <h1 class="text-2xl">{{ scramble }}</h1>
+    <div className="container span-2 min-w-full flex flex-col items-center">
+      <h1 className="text-2xl">Scramble:</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl">{{ scramble }}</h1>
       </div>
       <twisty-player
-        :alg="scramble"
+        ref="twistyPlayer"
         background="none"
         controlPanel="none"
         visualization="2D"
       ></twisty-player>
       <div>
-        <h2 class="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
+        <h2 className="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
       </div>
       <div className="my-2">
         <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
