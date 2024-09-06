@@ -18,6 +18,18 @@ export default {
     };
   },
   methods: {
+    inspection(){
+      this.startTime = 12;
+      this.timer = setInterval(() => {
+        this.elapsedTime = (this.startTime -= 0.01)
+          .toFixed(2)
+          .toString();
+        if(this.startTime <= 0) {
+          clearInterval(this.timer);
+          this.isInspection = false;
+        }
+      }, 10);
+    },
     start() {
       if (!this.isRunning) {
         this.isStopped = false;
@@ -44,6 +56,9 @@ export default {
     },
     onUpEvent(event) {
       if (event.code === "Space") {
+        if(this.isInspection) {
+          this.inspection();
+        }
         if (this.isStopped) {
           this.resetTimer();
         }
@@ -51,7 +66,7 @@ export default {
           this.stop();
           this.getScramble();
           this.times.push({ time: this.elapsedTime, scramble: this.scramble });
-        } else {
+        } else if(!this.isRunning && !this.isInspection) {
           this.start();
         }
       }
