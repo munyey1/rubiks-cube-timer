@@ -12,62 +12,56 @@ export default {
       timer: null,
       scramble: "",
       isRunning: false,
-      isStopped: false,
+      isStopped: true,
       isInspection: true,
       times: [],
     };
   },
   methods: {
-    inspection(){
-      this.startTime = 12;
+    inspection() {
+      this.startTime = 2;
       this.timer = setInterval(() => {
-        this.elapsedTime = (this.startTime -= 0.01)
-          .toFixed(2)
-          .toString();
-        if(this.startTime <= 0) {
-          clearInterval(this.timer);
-          this.isInspection = false;
-        }
+        this.elapsedTime = (this.startTime -= 0.01).toFixed(2).toString();
         this.isInspection = false;
+        if (this.startTime <= 0) {
+          clearInterval(this.timer);
+          this.stop();
+        }
       }, 10);
     },
     start() {
-      if (!this.isRunning) {
-        this.isStopped = false;
-        this.isRunning = true;
-        this.startTime = Date.now() - this.elapsedTime * 1000;
-        this.timer = setInterval(() => {
-          this.elapsedTime = ((Date.now() - this.startTime) / 1000)
-            .toFixed(2)
-            .toString();
-        }, 10);
-      }
+      this.isStopped = false;
+      this.isRunning = true;
+      this.startTime = Date.now() - this.elapsedTime * 1000;
+      this.timer = setInterval(() => {
+        this.elapsedTime = ((Date.now() - this.startTime) / 1000)
+          .toFixed(2)
+          .toString();
+      }, 10);
     },
     stop() {
+      this.getScramble();
+      this.times.push({ time: this.elapsedTime, scramble: this.scramble });
       this.isStopped = true;
       this.isRunning = false;
+      this.isInspection = true;
       clearInterval(this.timer);
-    },
-    resetTimer() {
-      this.elapsedTime = "0.00";
-      this.stop();
     },
     resetTimes() {
       this.times = [];
     },
     onUpEvent(event) {
       if (event.code === "Space") {
-        if(this.isInspection) {
+        if (this.isStopped && this.isInspection) {
+          // this.isStopped && !this.isRunning && this.isInspection
           this.inspection();
         }
-        if (this.isStopped) {
-          this.resetTimer();
-        }
-        if (this.isRunning) {
+        if (!this.isStopped && !this.isInspection) {
+          // !this.isStopped && this.isRunning && !this.isInspection
           this.stop();
-          this.getScramble();
-          this.times.push({ time: this.elapsedTime, scramble: this.scramble });
-        } else if(!this.isRunning && !this.isInspection) {
+        }
+        if (this.isStopped && !this.isInspection) {
+          // this.isStopped && !this.isRunning && !this.isInspection
           this.elapsedTime = "0.00";
           clearInterval(this.timer);
           this.start();
@@ -124,7 +118,12 @@ export default {
         visualization="2D"
       ></twisty-player>
       <div>
-        <h2 className="text-2xl my-2" >Time: {{ elapsedTime }} seconds</h2>
+        <h2 className="text-2xl my-2" v-if="!isInspection && !isRunning">
+          Inspection: {{ elapsedTime }} seconds
+        </h2>
+        <h2 className="text-2xl my-2" v-if="isRunning || isInspection">
+          Time: {{ elapsedTime }} seconds
+        </h2>
       </div>
       <div className="my-2">
         <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
