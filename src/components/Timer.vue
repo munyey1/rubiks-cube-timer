@@ -28,6 +28,7 @@ export default {
           clearInterval(this.timer);
           this.isInspection = false;
         }
+        this.isInspection = false;
       }, 10);
     },
     start() {
@@ -67,6 +68,8 @@ export default {
           this.getScramble();
           this.times.push({ time: this.elapsedTime, scramble: this.scramble });
         } else if(!this.isRunning && !this.isInspection) {
+          this.elapsedTime = "0.00";
+          clearInterval(this.timer);
           this.start();
         }
       }
@@ -121,7 +124,7 @@ export default {
         visualization="2D"
       ></twisty-player>
       <div>
-        <h2 className="text-2xl my-2">Time: {{ elapsedTime }} seconds</h2>
+        <h2 className="text-2xl my-2" >Time: {{ elapsedTime }} seconds</h2>
       </div>
       <div className="my-2">
         <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
