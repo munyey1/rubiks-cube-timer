@@ -1,4 +1,18 @@
-<style scoped></style>
+<style scoped>
+.dark-overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.z-10 {
+  z-index: 10; /* Ensure the timer and controls are above the overlay */
+}
+</style>
 
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
@@ -19,7 +33,7 @@ export default {
   },
   methods: {
     inspection() {
-      this.startTime = 2;
+      this.startTime = 15;
       this.timer = setInterval(() => {
         this.elapsedTime = (this.startTime -= 0.01).toFixed(2).toString();
         this.isInspection = false;
@@ -96,8 +110,17 @@ export default {
 
 <template>
   <div className="container min-w-full grid grid-cols-3">
+    <div v-if="isRunning" class="dark-overlay">
+    </div>
     <div className="container ml-10 pr-6">
-      <h2 v-if="times.length > 0" className="mb-2">Times:</h2>
+      <button
+        className="btn btn-outline mb-4"
+        @click="resetTimes"
+        :disabled="isRunning"
+      >
+        Reset Times
+      </button>
+      <h2 v-if="times.length > 0" className="text-lg mb-1">Times:</h2>
       <div>
         <ul>
           <li v-for="(time, index) in times" :key="index">
@@ -107,9 +130,23 @@ export default {
       </div>
     </div>
     <div className="container span-2 min-w-full flex flex-col items-center">
-      <h1 className="text-2xl">Scramble:</h1>
       <div className="mb-6">
         <h1 className="text-2xl">{{ scramble }}</h1>
+      </div>
+      <h2 className="text-5xl mt-40" v-if="!isInspection && !isRunning">
+        Inspection:
+      </h2>
+      <h2 className="text-5xl mt-40 z-10" v-if="isRunning || isInspection">
+        Time:
+      </h2>
+      <h2 className="text-5xl mb-40 z-10">{{ elapsedTime }} seconds</h2>
+      <div className="my-4">
+        <button className="btn w-20" @click="plus2" :disabled="isRunning">
+          +2
+        </button>
+        <button className="btn w-20" @click="dnf" :disabled="isRunning">
+          DNF
+        </button>
       </div>
       <twisty-player
         ref="twistyPlayer"
@@ -117,27 +154,6 @@ export default {
         controlPanel="none"
         visualization="2D"
       ></twisty-player>
-      <div>
-        <h2 className="text-2xl my-2" v-if="!isInspection && !isRunning">
-          Inspection: {{ elapsedTime }} seconds
-        </h2>
-        <h2 className="text-2xl my-2" v-if="isRunning || isInspection">
-          Time: {{ elapsedTime }} seconds
-        </h2>
-      </div>
-      <div className="my-2">
-        <button className="btn" @click="plus2" :disabled="isRunning">+2</button>
-        <button className="btn" @click="dnf" :disabled="isRunning">DNF</button>
-      </div>
-      <div className="mb-4">
-        <button
-          className="btn btn-outline"
-          @click="resetTimes"
-          :disabled="isRunning"
-        >
-          Reset Times
-        </button>
-      </div>
     </div>
   </div>
 </template>
