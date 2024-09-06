@@ -19,12 +19,12 @@ import Timer from "./components/Timer.vue";
 
 <template>
   <div className="container min-w-full min-h-full flex flex-col items-center">
-    <div role="tablist" className="container mt-6 tabs tabs-bordered">
+    <div role="tablist" className="container min-w-full mt-6 tabs tabs-bordered">
       <input
         type="radio"
         name="my_tabs_1"
         role="tab"
-        className="tab text-xl"
+        className="tab text-xl ml-20"
         aria-label="Timer"
         defaultChecked
       />
