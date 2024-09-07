@@ -14,10 +14,37 @@
 </style>
 
 <script setup>
+import { onMounted, ref } from "vue";
+import { supabase } from "./supabase";
+
+import Account from "./components/Account.vue";
+import Auth from "./components/Auth.vue";
 import Timer from "./components/Timer.vue";
+
+const session = ref();
+
+onMounted(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    session.value = data.session;
+  });
+  supabase.auth.onAuthStateChange((_, _session) => {
+    session.value = _session;
+  });
+});
+
+// auth through magic link instead
+// https://supabase.com/docs/reference/javascript/auth-admin-generatelink
+// i think do this in auth.vue. 
+// change signinwithotp with generateLink
+
+// use verifyotp to get the session instead here
+// https://supabase.com/docs/guides/auth/auth-email-passwordless?queryGroups=language&language=js scroll a bit down 
+
+
 </script>
 
 <template>
+  <!--
   <div className="font-mono container min-w-full min-h-full flex flex-col items-center">
     <div role="tablist" className="container min-w-full mt-6 tabs tabs-bordered">
       <input
@@ -42,4 +69,10 @@ import Timer from "./components/Timer.vue";
       <div role="tabpanel" className="tab-content p-10"></div>
     </div>
   </div>
+  -->
+  <div class="container" style="padding: 50px 0 100px 0">
+    <Account v-if="session" :session="session" />
+    <Auth v-else />
+  </div>
 </template>
+
