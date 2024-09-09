@@ -129,7 +129,7 @@ export default {
         </ul>
       </div>
     </div>
-    <div className="container span-2 min-w-full flex flex-col items-center">
+    <div className="container flex flex-col items-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
@@ -146,6 +146,8 @@ export default {
           DNF
         </button>
       </div>
+    </div>
+    <div className="container flex-col items-center place-content-center">
       <twisty-player
         ref="twistyPlayer"
         background="none"
