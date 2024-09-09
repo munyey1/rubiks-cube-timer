@@ -64,7 +64,7 @@ onMounted(() => {
       <div role="tabpanel" className="tab-content p-10"></div>
     </div>
   </div>
-  <div v-else class="container" style="padding: 50px 0 100px 0">
+  <div v-else className="font-mono container flex flex-col items-center" >
     <Auth />
   </div>
 </template>
