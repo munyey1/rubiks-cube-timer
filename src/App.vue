@@ -32,20 +32,15 @@ onMounted(() => {
   });
 });
 
-// auth through magic link instead
-// https://supabase.com/docs/reference/javascript/auth-admin-generatelink
-// i think do this in auth.vue. 
-// change signinwithotp with generateLink
-
-// use verifyotp to get the session instead here
-// https://supabase.com/docs/guides/auth/auth-email-passwordless?queryGroups=language&language=js scroll a bit down 
-
+// https://supabase.com/docs/reference/javascript/auth-signinwithoauth use oauth instead
+// will use google, and there should be an automatic verification
+// i assume this is creating a session for the user, so the user will just get redirected to the timer page
+// i'll check if the timer loads up correctly through oauth, but if i need another page for the timer then so be it
 
 </script>
 
 <template>
-  <!--
-  <div className="font-mono container min-w-full min-h-full flex flex-col items-center">
+  <div v-if="session" className="font-mono container min-w-full max-h-full flex flex-col items-center">
     <div role="tablist" className="container min-w-full mt-6 tabs tabs-bordered">
       <input
         type="radio"
@@ -69,10 +64,8 @@ onMounted(() => {
       <div role="tabpanel" className="tab-content p-10"></div>
     </div>
   </div>
-  -->
-  <div class="container" style="padding: 50px 0 100px 0">
-    <Account v-if="session" :session="session" />
-    <Auth v-else />
+  <div v-else class="container" style="padding: 50px 0 100px 0">
+    <Auth />
   </div>
 </template>
 
