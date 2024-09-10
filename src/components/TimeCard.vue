@@ -1,0 +1,12 @@
+<style scoped>
+
+</style>
+
+<script setup>
+import { ref } from 'vue'
+
+</script>
+
+<template>
+
+</template>
