@@ -18,7 +18,6 @@
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 
 export default {
-  name: "Timer",
   data() {
     return {
       startTime: 0,
@@ -92,11 +91,25 @@ export default {
       twistyPlayer.alg = this.scramble;
     },
     plus2() {
-      this.times[this.times.length - 1].time += "(+2)";
+      const plustwo = Number(this.times[this.times.length - 1].time);
+      this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
+      this.times[this.times.length - 1].time += "(+)";
     },
     dnf() {
       this.times[this.times.length - 1].time = "DNF";
     },
+    calculateAverage(num){
+      if (this.times.length < num) {
+        return "N/A";
+      } else{
+        const times = this.times.slice(-num);
+        const max = Math.max(...times.map((time) => time.time));
+        const min = Math.min(...times.map((time) => time.time));
+        const sum = times.reduce((acc, time) => acc + Number(time.time), 0);
+        const average = ((sum - max - min) / (times.length - 2)).toFixed(2);
+        return average;
+      }
+    }
   },
   mounted() {
     window.addEventListener("keyup", this.onUpEvent);
@@ -120,8 +133,10 @@ export default {
       >
         Reset Times
       </button>
-      <h2 v-if="times.length > 0" className="text-lg mb-1">Times:</h2>
-      <div className="pr-20">
+      <h2 className="span-2 text-lg">Average of last 5: {{ calculateAverage(5) }}</h2>
+      <h2 className="span-2 text-lg mb-4">Average of last 12: {{ calculateAverage(12) }}</h2>
+      <h2 v-if="times.length > 0" className="span-2 text-lg">Times:</h2>
+      <div className="span-2 pr-20">
         <ul>
           <li v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
