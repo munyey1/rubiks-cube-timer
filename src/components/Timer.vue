@@ -18,6 +18,19 @@
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 import { supabase } from "../supabase";
 
+/*
+ how and when am i going to store the times
+ insert into database, get from database and show?
+ might be redudant and too many operations for this simple app
+ instead of getting from database, just store in memory and then after logging out, insert into database?
+ but this requires the user log out in order to store the times
+ maybe just store in memory and then insert into database when the user logs in?
+ but the memory could be wiped
+ 
+ how about i get the solves from the database and store it in an array to display them
+ then for the future solves i just add them to the array and then insert them into the database
+ this way i dont have to keep fetching from the database
+*/
 
 export default {
   props: {
