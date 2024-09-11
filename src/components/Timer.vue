@@ -16,8 +16,13 @@
 
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
+import { supabase } from "../supabase";
+
 
 export default {
+  props: {
+    session: Object,
+  },
   data() {
     return {
       startTime: 0,
@@ -28,9 +33,33 @@ export default {
       isStopped: true,
       isInspection: true,
       times: [],
+      test: [],
     };
   },
   methods: {
+    async getTimes(){
+      const { data, error } = await supabase
+        .from("solves")
+        .select("*")
+        .eq("user_id", this.session.user.id);
+      if (error) {
+        console.error("Error fetching times", error);
+      } else {
+        this.test = data;
+      }
+    },
+    async insertTimes(){
+      const { data, error } = await supabase
+        .from("solves")
+        .insert([
+          { user_id: this.session.user.id, time: this.elapsedTime, scramble: this.scramble },
+        ]);
+      if (error) {
+        console.error("Error inserting times", error);
+      } else {
+        console.log("Inserted times", data);
+      }
+    },
     inspection() {
       this.startTime = 15;
       this.timer = setInterval(() => {
@@ -55,16 +84,19 @@ export default {
     stop() {
       this.getScramble();
       this.times.push({ time: this.elapsedTime, scramble: this.scramble });
+      this.insertTimes();
       this.isStopped = true;
       this.isRunning = false;
       this.isInspection = true;
       clearInterval(this.timer);
+      console.log(this.test);
     },
     resetTimes() {
       this.times = [];
     },
     onUpEvent(event) {
       if (event.code === "Space") {
+        this.getTimes();
         if (this.isStopped && this.isInspection) {
           // this.isStopped && !this.isRunning && this.isInspection
           this.inspection();

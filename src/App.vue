@@ -37,7 +37,7 @@ onMounted(() => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content p-10">
-        <Timer />
+        <Timer :session="session"/>
       </div>
 
       <input
