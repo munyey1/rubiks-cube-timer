@@ -37,7 +37,7 @@ onMounted(() => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content p-10">
-        <Timer :session="session"/>
+        <Timer :session="session" />
       </div>
 
       <input
@@ -49,8 +49,13 @@ onMounted(() => {
       />
       <div role="tabpanel" className="tab-content p-10"></div>
     </div>
+    <div>
+      <button className="btn btn-outline mt-6" @click="supabase.auth.signOut()">
+        Sign out
+      </button>
+    </div>
   </div>
-  <div v-else className="font-mono container flex flex-col items-center">
+  <div v-else className="font-mono container flex flex-col items-center mt-80">
     <Auth />
   </div>
 </template>
