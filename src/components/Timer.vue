@@ -26,6 +26,7 @@ import { supabase } from "../supabase";
 
   when the user presses either, im gonna have to get the latest solve and update it.
   not sure, i could just get a single solve and update it through ordering the ids
+  https://supabase.com/docs/reference/javascript/order
   ^this is probably the best way to do it
 
   for cstimer, a +2 is time+2(+) 
