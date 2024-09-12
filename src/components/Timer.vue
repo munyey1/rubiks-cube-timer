@@ -19,7 +19,19 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scrambl
 import { supabase } from "../supabase";
 
 /*
+  how to code +2 and dnf?
 
+  maybe add another column to the table for +2 and dnf?
+  ^this might be redundant
+
+  when the user presses either, im gonna have to get the latest solve and update it.
+  not sure, i could just get a single solve and update it through ordering the ids
+  ^this is probably the best way to do it
+
+  for cstimer, a +2 is time+2(+) 
+  i could just add 2 to the time and have a +2 flag
+
+  as for dnf, i could just have a dnf flag, then if the user presses dnf, i could just set the time to DNF
 */
 
 export default {
