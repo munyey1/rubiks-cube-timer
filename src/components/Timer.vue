@@ -19,17 +19,7 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scrambl
 import { supabase } from "../supabase";
 
 /*
- how and when am i going to store the times
- insert into database, get from database and show?
- might be redudant and too many operations for this simple app
- instead of getting from database, just store in memory and then after logging out, insert into database?
- but this requires the user log out in order to store the times
- maybe just store in memory and then insert into database when the user logs in?
- but the memory could be wiped
- 
- how about i get the solves from the database and store it in an array to display them
- then for the future solves i just add them to the array and then insert them into the database
- this way i dont have to keep fetching from the database
+
 */
 
 export default {
@@ -46,7 +36,6 @@ export default {
       isStopped: true,
       isInspection: true,
       times: [],
-      test: [],
     };
   },
   methods: {
@@ -58,7 +47,7 @@ export default {
       if (error) {
         console.error("Error fetching times", error);
       } else {
-        this.test = data;
+        this.times = data;
       }
     },
     async insertTimes(){
@@ -102,14 +91,12 @@ export default {
       this.isRunning = false;
       this.isInspection = true;
       clearInterval(this.timer);
-      console.log(this.test);
     },
     resetTimes() {
       this.times = [];
     },
     onUpEvent(event) {
       if (event.code === "Space") {
-        this.getTimes();
         if (this.isStopped && this.isInspection) {
           // this.isStopped && !this.isRunning && this.isInspection
           this.inspection();
@@ -147,6 +134,9 @@ export default {
       if (this.times.length < num) {
         return "N/A";
       } else{
+        // Get the last n times
+        // Remove the max and min times
+        // Calculate the average of the remaining times
         const times = this.times.slice(-num);
         const max = Math.max(...times.map((time) => time.time));
         const min = Math.min(...times.map((time) => time.time));
@@ -159,6 +149,7 @@ export default {
   mounted() {
     window.addEventListener("keyup", this.onUpEvent);
     this.getScramble();
+    this.getTimes();
   },
   beforeUnmount() {
     window.removeEventListener("keyup", this.onUpEvent);
@@ -167,7 +158,7 @@ export default {
 </script>
 
 <template>
-  <div className="container min-w-full grid grid-cols-3">
+  <div className="container min-w-full grid grid-cols-3 mt-10">
     <div v-if="isRunning || (!isInspection && !isRunning)" class="dark-overlay">
     </div>
     <div className="container ml-10 pr-6">
@@ -179,14 +170,14 @@ export default {
         Reset Times
       </button>
       <h2 className="span-2 text-lg">Average of last 5: {{ calculateAverage(5) }}</h2>
-      <h2 className="span-2 text-lg mb-4">Average of last 12: {{ calculateAverage(12) }}</h2>
-      <h2 v-if="times.length > 0" className="span-2 text-lg">Times:</h2>
-      <div className="span-2 pr-20">
-        <ul>
+      <h2 className="span-2 text-lg">Average of last 12: {{ calculateAverage(12) }}</h2>
+      <h2 className="span-2 text-lg mt-10 ">Times:</h2>
+      <div className="span-2 pr-20 overflow-y-scroll max-h-80">
+        <ol className="list-decimal list-inside">
           <li v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
           </li>
-        </ul>
+        </ol>
       </div>
     </div>
     <div className="container flex flex-col items-center">
@@ -207,7 +198,7 @@ export default {
         </button>
       </div>
     </div>
-    <div className="container flex-col items-center place-content-center">
+    <div className="container flex-col items-center place-content-center mt-20">
       <twisty-player
         ref="twistyPlayer"
         background="none"
