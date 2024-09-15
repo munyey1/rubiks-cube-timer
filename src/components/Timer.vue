@@ -52,6 +52,19 @@ export default {
     };
   },
   methods: {
+    async getLastTime(){
+      const { data, error} = await supabase
+        .from("solves")
+        .select("*")
+        .eq("user_id", this.session.user.id)
+        .order("id", { ascending: false })
+        .limit(1);
+      if (error) {
+        console.error("Error fetching last time", error);
+      } else {
+        return data;
+      }
+    },
     async getTimes(){
       const { data, error } = await supabase
         .from("solves")
@@ -64,15 +77,13 @@ export default {
       }
     },
     async insertTimes(){
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("solves")
         .insert([
           { user_id: this.session.user.id, time: this.elapsedTime, scramble: this.scramble },
         ]);
       if (error) {
         console.error("Error inserting times", error);
-      } else {
-        console.log("Inserted times", data);
       }
     },
     inspection() {
@@ -106,7 +117,7 @@ export default {
       clearInterval(this.timer);
     },
     resetTimes() {
-      this.times = [];
+      this.times = [];  
     },
     onUpEvent(event) {
       if (event.code === "Space") {
@@ -139,9 +150,14 @@ export default {
       const plustwo = Number(this.times[this.times.length - 1].time);
       this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
       this.times[this.times.length - 1].time += "(+)";
+      console.log(this.getLastTime());
+      const solve = this.getLastTime();
+      console.log(solve);
     },
     dnf() {
       this.times[this.times.length - 1].time = "DNF";
+      const solve = this.getLastTime();
+      console.log(solve);
     },
     calculateAverage(num){
       if (this.times.length < num) {
@@ -151,9 +167,35 @@ export default {
         // Remove the max and min times
         // Calculate the average of the remaining times
         const times = this.times.slice(-num);
-        const max = Math.max(...times.map((time) => time.time));
-        const min = Math.min(...times.map((time) => time.time));
-        const sum = times.reduce((acc, time) => acc + Number(time.time), 0);
+        const max = Math.max(...times.map((time) => {
+          if(time.time.includes("(+)")){
+            return time.time.replace("(+)", "")
+          }
+          if(time.time == "DNF"){
+            return 0
+          }
+          return time.time
+        }));
+        const min = Math.min(...times.map((time) =>{
+          if(time.time.includes("(+)")){
+            return time.time.replace("(+)", "")
+          }
+          if(time.time == "DNF"){
+            return 0
+          }
+          return time.time
+        }));
+        const sum = times.reduce((acc, time) => {
+          if(time.time.includes("(+)")){
+            const plus2 = time.time.replace("(+)", "")
+            return acc + Number(plus2);
+          }
+          if(time.time == "DNF"){
+            return acc
+          }
+          return acc + Number(time.time);
+        }, 0);
+        console.log(sum, max, min, times.length - 2);
         const average = ((sum - max - min) / (times.length - 2)).toFixed(2);
         return average;
       }
