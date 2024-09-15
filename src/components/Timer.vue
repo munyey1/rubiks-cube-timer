@@ -1,5 +1,5 @@
 <style scoped>
-.dark-overlay{
+.dark-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -52,8 +52,8 @@ export default {
     };
   },
   methods: {
-    async getLastTime(){
-      const { data, error} = await supabase
+    async getLastTime() {
+      const { data, error } = await supabase
         .from("solves")
         .select("*")
         .eq("user_id", this.session.user.id)
@@ -65,7 +65,7 @@ export default {
         return data;
       }
     },
-    async getTimes(){
+    async getTimes() {
       const { data, error } = await supabase
         .from("solves")
         .select("*")
@@ -76,11 +76,15 @@ export default {
         this.times = data;
       }
     },
-    async insertTimes(){
+    async insertTimes() {
       const { error } = await supabase
         .from("solves")
         .insert([
-          { user_id: this.session.user.id, time: this.elapsedTime, scramble: this.scramble },
+          {
+            user_id: this.session.user.id,
+            time: this.elapsedTime,
+            scramble: this.scramble,
+          },
         ]);
       if (error) {
         console.error("Error inserting times", error);
@@ -117,7 +121,7 @@ export default {
       clearInterval(this.timer);
     },
     resetTimes() {
-      this.times = [];  
+      this.times = [];
     },
     onUpEvent(event) {
       if (event.code === "Space") {
@@ -147,51 +151,60 @@ export default {
       twistyPlayer.alg = this.scramble;
     },
     plus2() {
-      const plustwo = Number(this.times[this.times.length - 1].time);
-      this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
-      this.times[this.times.length - 1].time += "(+)";
-      console.log(this.getLastTime());
-      const solve = this.getLastTime();
-      console.log(solve);
+      const time = this.times[this.times.length - 1].time;
+      if (time == "DNF") {
+        return;
+      } else {
+        const plustwo = Number(time);
+        time = (plustwo + 2).toFixed(2);
+        time += "(+)";
+        console.log(this.getLastTime());
+        const solve = this.getLastTime();
+        console.log(solve);
+      }
     },
     dnf() {
       this.times[this.times.length - 1].time = "DNF";
       const solve = this.getLastTime();
       console.log(solve);
     },
-    calculateAverage(num){
+    calculateAverage(num) {
       if (this.times.length < num) {
         return "N/A";
-      } else{
+      } else {
         // Get the last n times
         // Remove the max and min times
         // Calculate the average of the remaining times
         const times = this.times.slice(-num);
-        const max = Math.max(...times.map((time) => {
-          if(time.time.includes("(+)")){
-            return time.time.replace("(+)", "")
-          }
-          if(time.time == "DNF"){
-            return 0
-          }
-          return time.time
-        }));
-        const min = Math.min(...times.map((time) =>{
-          if(time.time.includes("(+)")){
-            return time.time.replace("(+)", "")
-          }
-          if(time.time == "DNF"){
-            return 0
-          }
-          return time.time
-        }));
+        const max = Math.max(
+          ...times.map((time) => {
+            if (time.time.includes("(+)")) {
+              return time.time.replace("(+)", "");
+            }
+            if (time.time == "DNF") {
+              return 0;
+            }
+            return time.time;
+          })
+        );
+        const min = Math.min(
+          ...times.map((time) => {
+            if (time.time.includes("(+)")) {
+              return time.time.replace("(+)", "");
+            }
+            if (time.time == "DNF") {
+              return 0;
+            }
+            return time.time;
+          })
+        );
         const sum = times.reduce((acc, time) => {
-          if(time.time.includes("(+)")){
-            const plus2 = time.time.replace("(+)", "")
+          if (time.time.includes("(+)")) {
+            const plus2 = time.time.replace("(+)", "");
             return acc + Number(plus2);
           }
-          if(time.time == "DNF"){
-            return acc
+          if (time.time == "DNF") {
+            return acc;
           }
           return acc + Number(time.time);
         }, 0);
@@ -199,7 +212,7 @@ export default {
         const average = ((sum - max - min) / (times.length - 2)).toFixed(2);
         return average;
       }
-    }
+    },
   },
   mounted() {
     window.addEventListener("keyup", this.onUpEvent);
@@ -214,8 +227,10 @@ export default {
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
-    <div v-if="isRunning || (!isInspection && !isRunning)" class="dark-overlay">
-    </div>
+    <div
+      v-if="isRunning || (!isInspection && !isRunning)"
+      class="dark-overlay"
+    ></div>
     <div className="container ml-10 pr-6">
       <button
         className="btn btn-outline mb-4"
@@ -224,8 +239,12 @@ export default {
       >
         Reset Times
       </button>
-      <h2 className="span-2 text-lg">Average of last 5: {{ calculateAverage(5) }}</h2>
-      <h2 className="span-2 text-lg">Average of last 12: {{ calculateAverage(12) }}</h2>
+      <h2 className="span-2 text-lg">
+        Average of last 5: {{ calculateAverage(5) }}
+      </h2>
+      <h2 className="span-2 text-lg">
+        Average of last 12: {{ calculateAverage(12) }}
+      </h2>
       <h2 className="span-2 text-lg mt-10 ">Times:</h2>
       <div className="span-2 pr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
