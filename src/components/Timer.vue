@@ -156,11 +156,20 @@ export default {
         return;
       } else {
         const plustwo = Number(time);
-        time = (plustwo + 2).toFixed(2);
-        time += "(+)";
-        console.log(this.getLastTime());
+        this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
+        this.times[this.times.length - 1].time += "(+)";
         const solve = this.getLastTime();
         console.log(solve);
+        /*
+        const { error } = await supabase
+          .from("solves")
+          .update({ plus_two: true })
+          .eq("user_id", this.session.user.id)
+          .eq("id", solve.id);
+        if (error) {
+          console.error("Error updating plus two", error);
+        }
+        */
       }
     },
     dnf() {
@@ -208,7 +217,6 @@ export default {
           }
           return acc + Number(time.time);
         }, 0);
-        console.log(sum, max, min, times.length - 2);
         const average = ((sum - max - min) / (times.length - 2)).toFixed(2);
         return average;
       }
