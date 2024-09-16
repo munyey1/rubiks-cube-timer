@@ -18,29 +18,12 @@
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 import { supabase } from "../supabase";
 
-/*
-  how to code +2 and dnf?
-
-  maybe add another column to the table for +2 and dnf?
-  ^this might be redundant
-
-  when the user presses either, im gonna have to get the latest solve and update it.
-  not sure, i could just get a single solve and update it through ordering the ids
-  https://supabase.com/docs/reference/javascript/order
-  ^this is probably the best way to do it
-
-  for cstimer, a +2 is time+2(+) 
-  i could just add 2 to the time and have a +2 flag
-
-  as for dnf, i could just have a dnf flag, then if the user presses dnf, i could just set the time to DNF
-*/
-
 export default {
   props: {
     session: Object,
   },
   data() {
-    return {
+    return {  
       startTime: 0,
       elapsedTime: "0.00",
       timer: null,
@@ -150,32 +133,38 @@ export default {
       const twistyPlayer = this.$refs.twistyPlayer;
       twistyPlayer.alg = this.scramble;
     },
-    plus2() {
+    async plus2() {
       const time = this.times[this.times.length - 1].time;
       if (time == "DNF") {
         return;
       } else {
+        // Add 2 seconds to the last time
+        // Format: time + 2(+)
+        // Update the time in the database
         const plustwo = Number(time);
         this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
         this.times[this.times.length - 1].time += "(+)";
-        const solve = this.getLastTime();
-        console.log(solve);
-        /*
+        // Use await here to work with promises
+        const solve = await this.getLastTime();
         const { error } = await supabase
           .from("solves")
-          .update({ plus_two: true })
-          .eq("user_id", this.session.user.id)
-          .eq("id", solve.id);
+          .update({ time: this.times[this.times.length - 1].time, plus_two: true })
+          .eq("id", solve[0].id);
         if (error) {
           console.error("Error updating plus two", error);
         }
-        */
-      }
+      } 
     },
-    dnf() {
+    async dnf() {
       this.times[this.times.length - 1].time = "DNF";
-      const solve = this.getLastTime();
-      console.log(solve);
+      const solve = await this.getLastTime();
+      const { error } = await supabase
+        .from("solves")
+        .update({ time: "DNF", dnf: true })
+        .eq("id", solve[0].id);
+      if (error) {
+        console.error("Error updating DNF", error);
+      }
     },
     calculateAverage(num) {
       if (this.times.length < num) {
