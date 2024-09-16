@@ -174,6 +174,8 @@ export default {
         // Remove the max and min times
         // Calculate the average of the remaining times
         const times = this.times.slice(-num);
+        // Get the max time
+        // Add plus 2 and dnf checking
         const max = Math.max(
           ...times.map((time) => {
             if (time.time.includes("(+)")) {
@@ -185,6 +187,7 @@ export default {
             return time.time;
           })
         );
+        // Get the minimum time
         const min = Math.min(
           ...times.map((time) => {
             if (time.time.includes("(+)")) {
