@@ -6,6 +6,7 @@ import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
 import Timer from "./components/Timer.vue";
+import Data from "./components/Data.vue";
 
 const session = ref();
 
@@ -47,7 +48,9 @@ onMounted(() => {
         className="tab text-xl"
         aria-label="Data"
       />
-      <div role="tabpanel" className="tab-content p-10"></div>
+      <div role="tabpanel" className="tab-content p-10">
+        <Data :session="session" />
+      </div>
     </div>
     <div>
       <button className="btn btn-outline mt-6" @click="supabase.auth.signOut()">
