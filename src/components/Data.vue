@@ -1,6 +1,4 @@
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
@@ -81,9 +79,9 @@ export default {
     session: Object,
   },
   data() {
-    return{
+    return {
       times: [],
-    }
+    };
   },
   methods: {
     async getTimes() {
@@ -91,7 +89,7 @@ export default {
       this.times = data;
     },
   },
-  mounted() { 
+  mounted() {
     this.getTimes();
   },
 };
@@ -100,17 +98,17 @@ export default {
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
     <div className="container flex flex-col items-center">
-      <ol className="list-decimal list-inside">
+      <div className="span-2 pr-20 overflow-y-scroll max-h-80">
+        <ol className="list-decimal list-inside">
           <li v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
           </li>
         </ol>
+      </div>
     </div>
-    <div className="container flex flex-col items-center">
-      test
-    </div>
-    <div className="container flex flex-col items-center">
-      test
-    </div>
+
+    <div className="container flex flex-col items-center">test</div>
+    
+    <div className="container flex flex-col items-center">test</div>
   </div>
 </template>
