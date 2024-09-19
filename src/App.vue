@@ -6,7 +6,7 @@ import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
 import Timer from "./components/Timer.vue";
-import Data from "./components/Data.vue";
+import DataComponent from "./components/Data.vue";
 
 const session = ref();
 
@@ -49,7 +49,7 @@ onMounted(() => {
         aria-label="Data"
       />
       <div role="tabpanel" className="tab-content p-10">
-        <Data :session="session" />
+        <DataComponent :session="session" />
       </div>
     </div>
     <div>
