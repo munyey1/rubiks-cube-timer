@@ -1,4 +1,4 @@
-<style scoped>
+<style scoped>  
 .dark-overlay {
   position: fixed;
   top: 0;
@@ -17,6 +17,7 @@
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 import { supabase } from "../supabase";
+import { GetTimes } from "../composables/useSupabase";
 
 export default {
   props: {
@@ -49,15 +50,8 @@ export default {
       }
     },
     async getTimes() {
-      const { data, error } = await supabase
-        .from("solves")
-        .select("*")
-        .eq("user_id", this.session.user.id);
-      if (error) {
-        console.error("Error fetching times", error);
-      } else {
-        this.times = data;
-      }
+      const data = await GetTimes(this.session.user.id);
+      this.times = data;
     },
     async insertTimes() {
       const { error } = await supabase
