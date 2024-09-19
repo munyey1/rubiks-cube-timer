@@ -5,6 +5,7 @@
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 import { supabase } from "../supabase";
+import { GetTimes } from "../composables/useSupabase";
 
 /*
 TODO:
@@ -79,14 +80,31 @@ export default {
   props: {
     session: Object,
   },
-
+  data() {
+    return{
+      times: [],
+    }
+  },
+  methods: {
+    async getTimes() {
+      const data = await GetTimes(this.session.user.id);
+      this.times = data;
+    },
+  },
+  mounted() { 
+    this.getTimes();
+  },
 };
 </script>
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
     <div className="container flex flex-col items-center">
-      test
+      <ol className="list-decimal list-inside">
+          <li v-for="(time, index) in times" :key="index">
+            {{ time.time }} seconds - {{ time.scramble }}
+          </li>
+        </ol>
     </div>
     <div className="container flex flex-col items-center">
       test
