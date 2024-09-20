@@ -77,20 +77,9 @@ https://www.chartjs.org/
 export default {
   props: {
     session: Object,
+    times: Array,
   },
   data() {
-    return {
-      times: [],
-    };
-  },
-  methods: {
-    async getTimes() {
-      const data = await GetTimes(this.session.user.id);
-      this.times = data;
-    },
-  },
-  mounted() {
-    this.getTimes();
   },
 };
 </script>
