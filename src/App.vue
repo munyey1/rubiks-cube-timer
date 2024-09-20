@@ -9,6 +9,7 @@ import Timer from "./components/Timer.vue";
 import DataComponent from "./components/Data.vue";
 
 const session = ref();
+const times = ref([]);
 
 onMounted(() => {
   supabase.auth.getSession().then(({ data }) => {
@@ -38,7 +39,7 @@ onMounted(() => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content p-10">
-        <Timer :session="session" />
+        <Timer :session="session" :times="times"/>
       </div>
 
       <input
@@ -49,7 +50,7 @@ onMounted(() => {
         aria-label="Data"
       />
       <div role="tabpanel" className="tab-content p-10">
-        <DataComponent :session="session" />
+        <DataComponent :session="session" :times="times" />
       </div>
     </div>
     <div>
