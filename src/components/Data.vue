@@ -79,8 +79,6 @@ export default {
     session: Object,
     times: Array,
   },
-  data() {
-  },
 };
 </script>
 
