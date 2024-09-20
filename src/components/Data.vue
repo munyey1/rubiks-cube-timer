@@ -1,10 +1,6 @@
 <style scoped></style>
 
 <script>
-import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
-import { supabase } from "../supabase";
-import { GetTimes } from "../composables/useSupabase";
-
 /*
 TODO:
 
@@ -84,7 +80,8 @@ export default {
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
-    <div className="container flex flex-col items-center">
+    <div className="container ml-10">
+      <h2 className="span-2 text-lg mt-10 ">Times:</h2>
       <div className="span-2 pr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
           <li v-for="(time, index) in times" :key="index">
