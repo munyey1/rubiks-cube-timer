@@ -1,6 +1,8 @@
 <style scoped></style>
 
 <script>
+import { calculateAverage } from '../composables/calcAvg';
+
 /*
 TODO:
 
@@ -75,12 +77,23 @@ export default {
     session: Object,
     times: Array,
   },
+  methods:{
+   testfunc(){
+     console.log(calculateAverage(5, this.times));
+   }
+  },
 };
 </script>
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
     <div className="container ml-10">
+      <h2 className="span-2 text-lg">
+         Average of last 5: 
+      </h2>
+      <h2 className="span-2 text-lg">
+        Average of last 12: 
+      </h2>
       <h2 className="span-2 text-lg mt-10 ">Times:</h2>
       <div className="span-2 pr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
@@ -91,7 +104,12 @@ export default {
       </div>
     </div>
 
-    <div className="container flex flex-col items-center">test</div>
+    <div className="container flex flex-col items-center">
+      <button @click="testfunc">
+         test
+      </button>
+
+    </div>
     
     <div className="container flex flex-col items-center">test</div>
   </div>
