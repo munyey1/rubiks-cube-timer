@@ -1,4 +1,4 @@
-<style scoped>  
+<style scoped>
 .dark-overlay {
   position: fixed;
   top: 0;
@@ -17,7 +17,6 @@
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
 import { supabase } from "../supabase";
-import { GetTimes } from "../composables/useSupabase";
 
 export default {
   props: {
@@ -25,7 +24,7 @@ export default {
     times: Array,
   },
   data() {
-    return {  
+    return {
       startTime: 0,
       elapsedTime: "0.00",
       timer: null,
@@ -50,21 +49,26 @@ export default {
       }
     },
     async getTimes() {
-      const data = await GetTimes(this.session.user.id);
-      for (let i = 0; i < data.length; i++) {
-        this.times.push(data[i]);
+      const { data, error } = await supabase
+        .from("solves")
+        .select("*")
+        .eq("user_id", this.session.user.id);
+      if (error) {
+        console.error("Error fetching times", error);
+      } else {
+        for (let i = 0; i < data.length; i++) {
+          this.times.push(data[i]);
+        }
       }
     },
     async insertTimes() {
-      const { error } = await supabase
-        .from("solves")
-        .insert([
-          {
-            user_id: this.session.user.id,
-            time: this.elapsedTime,
-            scramble: this.scramble,
-          },
-        ]);
+      const { error } = await supabase.from("solves").insert([
+        {
+          user_id: this.session.user.id,
+          time: this.elapsedTime,
+          scramble: this.scramble,
+        },
+      ]);
       if (error) {
         console.error("Error inserting times", error);
       }
@@ -144,12 +148,15 @@ export default {
         const solve = await this.getLastTime();
         const { error } = await supabase
           .from("solves")
-          .update({ time: this.times[this.times.length - 1].time, plus_two: true })
+          .update({
+            time: this.times[this.times.length - 1].time,
+            plus_two: true,
+          })
           .eq("id", solve[0].id);
         if (error) {
           console.error("Error updating plus two", error);
         }
-      } 
+      }
     },
     async dnf() {
       this.times[this.times.length - 1].time = "DNF";
