@@ -22,6 +22,7 @@ import { GetTimes } from "../composables/useSupabase";
 export default {
   props: {
     session: Object,
+    times: Array,
   },
   data() {
     return {  
@@ -32,7 +33,6 @@ export default {
       isRunning: false,
       isStopped: true,
       isInspection: true,
-      times: [],
     };
   },
   methods: {
@@ -51,7 +51,9 @@ export default {
     },
     async getTimes() {
       const data = await GetTimes(this.session.user.id);
-      this.times = data;
+      for (let i = 0; i < data.length; i++) {
+        this.times.push(data[i]);
+      }
     },
     async insertTimes() {
       const { error } = await supabase
