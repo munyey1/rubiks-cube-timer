@@ -116,31 +116,28 @@ export default {
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
+
+    <div className="container col-span-2 flex flex-col items-center">
+      <p>Best Time: {{ bestTime() }} seconds</p>
+      <p>Worst Time: {{ worstTime() }} seconds</p>
+    </div>
+
     <div className="container ml-10">
-      <h2 className="span-2 text-lg">
-        Average of last 5: {{ calculateAverage(5) }}
-      </h2>
-      <h2 className="span-2 text-lg">
+      <p>Average of last 5: {{ calculateAverage(5) }}</p>
+      <p>
         Average of last 12: {{ calculateAverage(12) }}
-      </h2>
-      <h2 className="span-2 text-lg" v-if="this.times.length > 50">
+      </p>
+      <p v-if="this.times.length > 50">
         Average of last 50: {{ calculateAverage(50) }}
-      </h2>
-      <h2 className="span-2 text-lg mt-10 ">Times:</h2>
-      <div className="span-2 pr-20 overflow-y-scroll max-h-80">
+      </p>
+      <h2 className="text-lg mt-10 ">Times:</h2>
+      <div className="mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
-          <li v-for="(time, index) in times" :key="index">
+          <li className="pb-2" v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
           </li>
         </ol>
       </div>
     </div>
-
-    <div className="container flex flex-col items-center">
-      <p>Best Time: {{ bestTime() }} seconds</p>
-      <p>Worst Time: {{ worstTime() }} seconds</p>
-    </div>
-
-    <div className="container flex flex-col items-center">test</div>
   </div>
 </template>
