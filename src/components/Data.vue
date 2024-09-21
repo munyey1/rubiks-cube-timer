@@ -1,7 +1,7 @@
 <style scoped></style>
 
 <script>
-import { calculateAverage } from '../composables/calcAvg';
+import { calculateAverage } from "../composables/calcAvg";
 
 /*
 TODO:
@@ -77,10 +77,39 @@ export default {
     session: Object,
     times: Array,
   },
-  methods:{
-   testfunc(){
-     console.log(calculateAverage(5, this.times));
-   }
+  methods: {
+    calculateAverage(num) {
+      return calculateAverage(num, this.times);
+    },
+    bestTime() {
+      const parseTime = (time) => {
+        if (time.includes("(+)")) {
+          return Number(time.replace("(+)", ""));
+        } else if (time === "DNF") {
+          return Infinity;
+        }
+        return time;
+      };
+      const times = this.times.map((time) => parseTime(time.time));
+
+      const bestTime = Math.min(...times);
+
+      return bestTime === Infinity ? null : bestTime;
+    },
+    worstTime() {
+      const parseTime = (time) => {
+        if (time.includes("(+)")) {
+          return Number(time.replace("(+)", ""));
+        } else if (time === "DNF") {
+          return -Infinity;
+        }
+        return time;
+      };
+      const times = this.times.map((time) => parseTime(time.time));
+
+      const worstTime = Math.max(...times);
+      return worstTime === -Infinity ? null : worstTime;
+    },
   },
 };
 </script>
@@ -89,10 +118,13 @@ export default {
   <div className="container min-w-full grid grid-cols-3 mt-10">
     <div className="container ml-10">
       <h2 className="span-2 text-lg">
-         Average of last 5: 
+        Average of last 5: {{ calculateAverage(5) }}
       </h2>
       <h2 className="span-2 text-lg">
-        Average of last 12: 
+        Average of last 12: {{ calculateAverage(12) }}
+      </h2>
+      <h2 className="span-2 text-lg" v-if="this.times.length > 50">
+        Average of last 50: {{ calculateAverage(50) }}
       </h2>
       <h2 className="span-2 text-lg mt-10 ">Times:</h2>
       <div className="span-2 pr-20 overflow-y-scroll max-h-80">
@@ -105,12 +137,10 @@ export default {
     </div>
 
     <div className="container flex flex-col items-center">
-      <button @click="testfunc">
-         test
-      </button>
-
+      <p>Best Time: {{ bestTime() }} seconds</p>
+      <p>Worst Time: {{ worstTime() }} seconds</p>
     </div>
-    
+
     <div className="container flex flex-col items-center">test</div>
   </div>
 </template>
