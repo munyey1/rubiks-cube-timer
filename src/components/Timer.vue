@@ -207,9 +207,9 @@ export default {
         Average of last 12: {{ calculateAverage(12) }}
       </h2>
       <h2 className="span-2 text-lg mt-10 ">Times:</h2>
-      <div className="span-2 pr-20 overflow-y-scroll max-h-80">
+      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
-          <li v-for="(time, index) in times" :key="index">
+          <li className="pb-2" v-for="(time, index) in times" :key="index">
             {{ time.time }} seconds - {{ time.scramble }}
           </li>
         </ol>
