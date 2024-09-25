@@ -97,8 +97,9 @@ export default {
       }, 10);
     },
     stop() {
+      const date = new Date(Date.now()).toISOString();
       this.getScramble();
-      this.times.push({ time: this.elapsedTime, scramble: this.scramble });
+      this.times.push({ time: this.elapsedTime, solved_at: date ,scramble: this.scramble });
       this.insertTimes();
       this.isStopped = true;
       this.isRunning = false;
@@ -210,7 +211,8 @@ export default {
       <div className="span-2 mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
           <li className="pb-2" v-for="(time, index) in times" :key="index">
-            {{ time.time }} seconds - {{ time.scramble }}
+            <p>{{ time.time }} seconds</p>
+            <p>Scramble - {{ time.scramble }}</p>
           </li>
         </ol>
       </div>
