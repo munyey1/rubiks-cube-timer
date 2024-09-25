@@ -1,7 +1,52 @@
 <style scoped></style>
 
+<template>
+  <div className="container min-w-full grid grid-cols-3 mt-10">
+    <div className="container col-span-2 flex flex-col items-center">
+      <p>Best Time: {{ bestTime() }} seconds</p>
+      <p>Worst Time: {{ worstTime() }} seconds</p>
+      <Bar :data="barData" :options="options" className="ml-4"/>
+      <button className="btn btn-outline mt-4" @click="test">View More Insights</button>
+    </div>
+
+    <div className="container ml-10">
+      <p>Average of last 5: {{ calculateAverage(5) }}</p>
+      <p>Average of last 12: {{ calculateAverage(12) }}</p>
+      <p>Average of last 50: {{ calculateAverage(50) }}</p>
+      <h2 className="text-lg mt-10 ">Times:</h2>
+      <div className="mr-20 overflow-y-scroll max-h-80">
+        <ol className="list-decimal list-inside">
+          <li className="pb-2" v-for="(time, index) in times" :key="index">
+            <p>{{ time.time }} seconds</p>
+            <p>Scramble - {{ time.scramble }}</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 import { calculateAverage } from "../composables/calcAvg";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+import { Bar, Line } from "vue-chartjs";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 /*
 TODO:
@@ -77,6 +122,26 @@ export default {
     session: Object,
     times: Array,
   },
+  components: {
+    Bar,
+    Line
+  },
+  data() {
+    return {
+      barData: {
+        labels: ["January", "February", "March"],
+        datasets: [{ data: [40, 20, 12], backgroundColor: ["#FF0000", "#EE8853", "#15F4EE"] }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend:{
+            display: false,
+          }
+        },
+      },
+    };
+  },
   methods: {
     calculateAverage(num) {
       return calculateAverage(num, this.times);
@@ -110,34 +175,12 @@ export default {
       const worstTime = Math.max(...times);
       return worstTime === -Infinity ? null : worstTime;
     },
+    test() {
+      const date = new Date(Date.now()).toISOString();
+      console.log(this.times);
+      console.log(date)
+    },  
   },
 };
 </script>
-
-<template>
-  <div className="container min-w-full grid grid-cols-3 mt-10">
-
-    <div className="container col-span-2 flex flex-col items-center">
-      <p>Best Time: {{ bestTime() }} seconds</p>
-      <p>Worst Time: {{ worstTime() }} seconds</p>
-    </div>
-
-    <div className="container ml-10">
-      <p>Average of last 5: {{ calculateAverage(5) }}</p>
-      <p>
-        Average of last 12: {{ calculateAverage(12) }}
-      </p>
-      <p>
-        Average of last 50: {{ calculateAverage(50) }}
-      </p>
-      <h2 className="text-lg mt-10 ">Times:</h2>
-      <div className="mr-20 overflow-y-scroll max-h-80">
-        <ol className="list-decimal list-inside">
-          <li className="pb-2" v-for="(time, index) in times" :key="index">
-            {{ time.time }} seconds - {{ time.scramble }}
-          </li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</template>
+ 
