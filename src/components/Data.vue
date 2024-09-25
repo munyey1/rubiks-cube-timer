@@ -5,7 +5,7 @@
     <div className="container col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
-      <Bar :data="barData" :options="options" className="ml-4"/>
+      <Line :data="lineData" :options="options" className="ml-4"/>
       <button className="btn btn-outline mt-4" @click="test">View More Insights</button>
     </div>
 
@@ -36,6 +36,8 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
 } from "chart.js";
 import { Bar, Line } from "vue-chartjs";
 
@@ -43,10 +45,84 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
+
+export default {
+  props: {
+    session: Object,
+    times: Array,
+  },
+  components: {
+    Bar,
+    Line,
+  },
+  data() {
+    return {
+      lineData: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets: [{ data: [40, 39, 10, 40, 39, 80, 40, 20, 40, 50, 60, 50], backgroundColor: "#FFFFFF", borderColor: "#FF0000" }],
+      },
+      testData: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets: [{ data: [40, 39, 10, 40, 39, 80, 40, 20, 40, 50, 60, 50], backgroundColor: "#FFFFFF", borderColor: "#FF0000" }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend:{
+            display: false,
+          }
+        },
+      },
+    };
+  },
+  methods: {
+    calculateAverage(num) {
+      return calculateAverage(num, this.times);
+    },
+    bestTime() {
+      const parseTime = (time) => {
+        if (time.includes("(+)")) {
+          return Number(time.replace("(+)", ""));
+        } else if (time === "DNF") {
+          return Infinity;
+        }
+        return time;
+      };
+      const times = this.times.map((time) => parseTime(time.time));
+
+      const bestTime = Math.min(...times);
+
+      return bestTime === Infinity ? null : bestTime;
+    },
+    worstTime() {
+      const parseTime = (time) => {
+        if (time.includes("(+)")) {
+          return Number(time.replace("(+)", ""));
+        } else if (time === "DNF") {
+          return -Infinity;
+        }
+        return time;
+      };
+      const times = this.times.map((time) => parseTime(time.time));
+
+      const worstTime = Math.max(...times);
+      return worstTime === -Infinity ? null : worstTime;
+    },
+    test() {
+      const date = new Date(Date.now()).toISOString();
+      console.log(this.times);
+      console.log(date)
+    },  
+  },
+};
+</script>
+ 
 
 /*
 TODO:
@@ -116,71 +192,3 @@ https://www.chartjs.org/
 - Use visualizations (charts, graphs) to display trends, averages, and best times over time.
 - Allow users to filter insights by date range (e.g., last 7 days, last 30 days) for better control over their performance analysis.
 */
-
-export default {
-  props: {
-    session: Object,
-    times: Array,
-  },
-  components: {
-    Bar,
-    Line
-  },
-  data() {
-    return {
-      barData: {
-        labels: ["January", "February", "March"],
-        datasets: [{ data: [40, 20, 12], backgroundColor: ["#FF0000", "#EE8853", "#15F4EE"] }],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend:{
-            display: false,
-          }
-        },
-      },
-    };
-  },
-  methods: {
-    calculateAverage(num) {
-      return calculateAverage(num, this.times);
-    },
-    bestTime() {
-      const parseTime = (time) => {
-        if (time.includes("(+)")) {
-          return Number(time.replace("(+)", ""));
-        } else if (time === "DNF") {
-          return Infinity;
-        }
-        return time;
-      };
-      const times = this.times.map((time) => parseTime(time.time));
-
-      const bestTime = Math.min(...times);
-
-      return bestTime === Infinity ? null : bestTime;
-    },
-    worstTime() {
-      const parseTime = (time) => {
-        if (time.includes("(+)")) {
-          return Number(time.replace("(+)", ""));
-        } else if (time === "DNF") {
-          return -Infinity;
-        }
-        return time;
-      };
-      const times = this.times.map((time) => parseTime(time.time));
-
-      const worstTime = Math.max(...times);
-      return worstTime === -Infinity ? null : worstTime;
-    },
-    test() {
-      const date = new Date(Date.now()).toISOString();
-      console.log(this.times);
-      console.log(date)
-    },  
-  },
-};
-</script>
- 
