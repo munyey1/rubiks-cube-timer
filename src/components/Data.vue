@@ -115,9 +115,10 @@ export default {
       return worstTime === -Infinity ? null : worstTime;
     },
     test() {
-      const date = new Date(Date.now()).toISOString();
-      console.log(this.times);
+      const date = new Date(Date.now()).toISOString();  
       console.log(date)
+      const list = this.times.map((time) => console.log(time.time));
+      console.log(list)
     },  
   },
 };
