@@ -127,7 +127,7 @@ export default {
       <p>
         Average of last 12: {{ calculateAverage(12) }}
       </p>
-      <p v-if="this.times.length > 50">
+      <p>
         Average of last 50: {{ calculateAverage(50) }}
       </p>
       <h2 className="text-lg mt-10 ">Times:</h2>
