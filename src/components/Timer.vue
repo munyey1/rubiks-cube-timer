@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { randomScrambleForEvent } from "https://cdn.cubing.net/js/cubing/scramble";
+import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scramble";
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/calcAvg";

@@ -43,7 +43,7 @@ import {
   LineElement,
 } from "chart.js";
 import { ref } from "vue";
-import { Bar, Line } from "vue-chartjs";
+import { Line } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -152,7 +152,6 @@ export default {
       });
       this.lineData.datasets[0].data = this.times.map((time) => parseTime(time.time));
       const chart = this.$refs.lineChart;
-      console.log(chart);
     },
   },
   updated() {
