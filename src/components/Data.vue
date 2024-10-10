@@ -5,9 +5,13 @@
     <div className="container col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
-      <Line ref="lineChart" :data="lineData" :options="options" className="ml-4" />
-      <button className="btn btn-outline mt-4" @click="test">
-        View More Insights
+      <LineChart
+        :data="lineData"
+        :options="options"
+        className="ml-4"
+      />
+      <button className="btn btn-outline mt-4" @click="updateChart">
+        Update Chart
       </button>
     </div>
 
@@ -30,6 +34,7 @@
 
 <script>
 import { calculateAverage } from "../composables/calcAvg";
+import LineChart from "./LineChart.vue";
 
 import {
   Chart as ChartJS,
@@ -63,14 +68,41 @@ export default {
   },
   components: {
     Line,
+    LineChart,
   },
   data() {
+    const parseTime = (time) => {
+      if (time.includes("(+)")) {
+        return time.replace("(+)", "");
+      }
+      if (time === "DNF") {
+        return 0;
+      }
+      return time;
+    };
+
+    const labels = this.times.map((time) => {
+      const date = new Date(time.solved_at);
+      return (
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        " " +
+        date.getDate() +
+        "/" +
+        date.getMonth() +
+        "/" +
+        date.getFullYear()
+      );
+    });
+
+    const data = this.times.map((time) => parseTime(time.time));
     return {
       lineData: {
-        labels: [],
+        labels: labels,
         datasets: [
           {
-            data: [],
+            data: data,
             backgroundColor: "#FFFFFF",
             borderColor: "#FF0000",
           },
@@ -84,6 +116,8 @@ export default {
           },
         },
       },
+      newlabel: labels,
+      newdata: data,
     };
   },
   methods: {
@@ -136,7 +170,7 @@ export default {
         return time;
       };
 
-      this.lineData.labels = this.times.map((time) => {
+      const labelss = this.times.map((time) => {
         const date = new Date(time.solved_at);
         return (
           date.getHours() +
@@ -150,11 +184,23 @@ export default {
           date.getFullYear()
         );
       });
-      this.lineData.datasets[0].data = this.times.map((time) => parseTime(time.time));
-      const chart = this.$refs.lineChart;
+
+      const datas = this.times.map((time) => parseTime(time.time));
+
+      this.lineData.labels = {
+        labels: labelss,
+        datasets: [
+          ...this.lineData.datasets,
+          {
+            data: datas,
+            backgroundColor: "#FFFFFF",
+            borderColor: "#FF0000",
+          },
+        ],
+      };
     },
   },
-  updated() {
+  mounted() {
     this.updateChart();
   },
 };
