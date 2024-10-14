@@ -5,10 +5,20 @@
     <div className="container col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
+      <div className="dropdown dropdown-hover">
+        <div tabIndex={0} className="btn m-1" role="button">Filter Times</div>
+        <ul
+          tabIndex={0} className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+        >
+          <li><a @click="changeLineFilter('All')">All</a></li>
+          <li><a @click="changeLineFilter(100)">Last 100</a></li>
+          <li><a @click="changeLineFilter(50)">Last 50</a></li>
+          <li><a @click="changeLineFilter(12)">Last 12</a></li>
+          <li><a @click="changeLineFilter(5)">Last 5</a></li>
+        </ul>
+      </div>
+      <p>{{ lineFilter }}</p>
       <Line :data="lineData" :options="options" className="ml-4" />
-      <button className="btn btn-outline mt-4" @click="updateChart">
-        Update Chart
-      </button>
     </div>
 
     <div className="container ml-10">
@@ -29,7 +39,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { calculateAverage } from "../composables/calcAvg";
 
 import {
@@ -42,6 +52,7 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  scales,
 } from "chart.js";
 import { Line } from "vue-chartjs";
 
@@ -60,6 +71,11 @@ const props = defineProps({
   session: Object,
   times: Array,
 });
+
+const lineFilter = ref("All");
+const changeLineFilter = (filter) => {
+  lineFilter.value = filter;
+};
 
 const parseTime = (time) => {
   if (time.includes("(+)")) {
@@ -110,6 +126,28 @@ const options = {
       display: false,
     },
   },
+  scales: {
+    x: {
+      display: true,
+      title: {
+        display: true,
+        text: "Time",
+        font: {
+          size: 20,
+        },
+      },
+    },
+    y: {
+      display: true,
+      title: {
+        display: true,
+        text: "Date",
+        font: {
+          size: 20,
+        },
+      },
+    },
+  },
 };
 
 // Methods
@@ -131,33 +169,4 @@ const worstTime = () => {
   return worst === -Infinity ? null : worst;
 };
 
-const updateChart = () => {
-  const labels = props.times.map((time) => {
-    const date = new Date(time.solved_at);
-    return (
-      date.getHours() +
-      ":" +
-      date.getMinutes() +
-      " " +
-      date.getDate() +
-      "/" +
-      date.getMonth() +
-      "/" +
-      date.getFullYear()
-    );
-  });
-
-  const data = props.times.map((time) => parseTime(time.time));
-
-  lineData.value = {
-    labels: labels,
-    datasets: [
-      {
-        data: data,
-        backgroundColor: "#FFFFFF",
-        borderColor: "#FF0000",
-      },
-    ],
-  };
-};
 </script>
