@@ -5,19 +5,17 @@
     <div className="container col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
-      <div className="dropdown dropdown-hover">
-        <div tabIndex={0} className="btn m-1" role="button">Filter Times</div>
-        <ul
-          tabIndex={0} className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-        >
-          <li><a @click="changeLineFilter('All')">All</a></li>
-          <li><a @click="changeLineFilter(100)">Last 100</a></li>
-          <li><a @click="changeLineFilter(50)">Last 50</a></li>
-          <li><a @click="changeLineFilter(12)">Last 12</a></li>
-          <li><a @click="changeLineFilter(5)">Last 5</a></li>
-        </ul>
+      <div className="mt-2">
+        <select v-model="lineFilter">
+          <option value="" selected disabled>Please select</option>
+          <option value="0">All</option>
+          <option value="5">Last 5</option>
+          <option value="12">Last 12</option>
+          <option value="25">Last 25</option>
+          <option value="50">Last 50</option>
+          <option value="100">Last 100</option>
+        </select>
       </div>
-      <p>{{ lineFilter }}</p>
       <Line :data="lineData" :options="options" className="ml-4" />
     </div>
 
@@ -72,10 +70,7 @@ const props = defineProps({
   times: Array,
 });
 
-const lineFilter = ref("All");
-const changeLineFilter = (filter) => {
-  lineFilter.value = filter;
-};
+const lineFilter = ref(0);
 
 const parseTime = (time) => {
   if (time.includes("(+)")) {
@@ -88,7 +83,7 @@ const parseTime = (time) => {
 };
 
 const labels = computed(() => {
-  return props.times.map((time) => {
+  return props.times.slice(-lineFilter.value).map((time) => {
     const date = new Date(time.solved_at);
     return (
       date.getHours() +
@@ -105,7 +100,9 @@ const labels = computed(() => {
 });
 
 const data = computed(() => {
-  return props.times.map((time) => parseTime(time.time));
+  return props.times
+    .slice(-lineFilter.value)
+    .map((time) => parseTime(time.time));
 });
 
 const lineData = computed(() => ({
@@ -131,7 +128,7 @@ const options = {
       display: true,
       title: {
         display: true,
-        text: "Time",
+        text: "Date",
         font: {
           size: 20,
         },
@@ -141,7 +138,7 @@ const options = {
       display: true,
       title: {
         display: true,
-        text: "Date",
+        text: "Time",
         font: {
           size: 20,
         },
@@ -168,5 +165,4 @@ const worstTime = () => {
   const worst = Math.max(...parsedTimes);
   return worst === -Infinity ? null : worst;
 };
-
 </script>
