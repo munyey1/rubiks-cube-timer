@@ -16,7 +16,8 @@
           <option value="100">Last 100</option>
         </select>
       </div>
-      <Line :data="lineData" :options="options" className="ml-4 mt-8" />
+      <Line :data="lineData" :options="lineOptions" className="ml-4 mt-8" />
+      <Bar :data="barData" :options="barOptions" className="ml-4 mt-10" />
       <div>
         <p>Dnf Rate {{ dnfRate.toFixed(2) }}</p>
       </div>
@@ -54,7 +55,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { Line } from "vue-chartjs";
+import { Line, Bar } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -87,6 +88,23 @@ const parseTime = (time) => {
 const dnfRate = computed(() => {
   const dnf = props.times.filter((time) => time.time === "DNF").length;
   return (dnf / props.times.length) * 100;
+});
+
+const plusTwoRate = computed(() => {
+  const plusTwo = props.times.filter((time) => time.time.includes("(+)")).length;
+  return (plusTwo / props.times.length) * 100;
+});
+
+const dnfs = computed(() => {
+  return props.times.filter((time) => time.time === "DNF").length;
+});
+
+const plusTwos = computed(() => {
+  return props.times.filter((time) => time.time.includes("(+)")).length;
+});
+
+const totalSolves = computed(() => {
+  return props.times.length;
 });
 
 const labels = computed(() => {
@@ -124,7 +142,18 @@ const lineData = computed(() => ({
   ],
 }));
 
-const options = {
+const barData = computed(() => ({
+  labels: ["DNFs", "+2s", "Solves"],
+  datasets: [
+    {
+      label: "DNFs, +2s and Solves Count",
+      data: [dnfs.value, plusTwos.value, totalSolves.value],
+      backgroundColor: "#03e3fc",
+    },
+  ],
+}));
+
+const lineOptions = {
   responsive: true,
   plugins: {
     legend: {
@@ -157,6 +186,48 @@ const options = {
       title: {
         display: true,
         text: "Time",
+        color: "white",
+        font: {
+          size: 20,
+        },
+      },
+    },
+  },
+};
+
+const barOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      labels: {
+        color: "white",
+      },
+    },
+  },
+  scales: {
+    x: {
+      ticks:{
+        color: "white",
+      },
+      display: true,
+      title: {
+        display: true,
+        text: "DNFs, +2s and Solves",
+        color: "white",
+        font: {
+          size: 20,
+        },
+      },
+    },
+    y: {
+      ticks: {
+        color: "white",
+      },
+      display: true,
+      title: {
+        display: true,
+        text: "Count",
         color: "white",
         font: {
           size: 20,
