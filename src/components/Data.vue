@@ -20,9 +20,9 @@
     </div>
 
     <div className="container ml-10">
-      <p>Average of last 5: {{ getAverage(5) }}</p>
-      <p>Average of last 12: {{ getAverage(12) }}</p>
-      <p>Average of last 50: {{ getAverage(50) }}</p>
+      <p className="text-lg">Average of last 5: {{ getAverage(5) }}</p>
+      <p className="text-lg">Average of last 12: {{ getAverage(12) }}</p>
+      <p className="text-lg">Average of last 50: {{ getAverage(50) }}</p>
       <h2 className="text-lg mt-10 ">Times:</h2>
       <div className="mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
@@ -81,6 +81,11 @@ const parseTime = (time) => {
   }
   return time;
 };
+
+const dnfRate = computed(() => {
+  const dnf = props.times.filter((time) => time.time === "DNF").length;
+  return (dnf / props.times.length) * 100;
+});
 
 const labels = computed(() => {
   return props.times.slice(-lineFilter.value).map((time) => {

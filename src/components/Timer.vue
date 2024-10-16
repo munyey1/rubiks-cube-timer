@@ -20,29 +20,13 @@
       v-if="isRunning || (!isInspection && !isRunning)"
       class="dark-overlay"
     ></div>
-    <div className="container ml-10 pr-6">
-      <button
-        className="btn btn-outline mb-4"
-        @click="resetTimes"
-        :disabled="isRunning"
-      >
-        Reset Times
-      </button>
-      <h2 className="span-2 text-lg">
-        Average of last 5: {{ calculateAverage(5) }}
-      </h2>
-      <h2 className="span-2 text-lg">
-        Average of last 12: {{ calculateAverage(12) }}
-      </h2>
-      <h2 className="span-2 text-lg mt-10 ">Times:</h2>
-      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
-        <ol className="list-decimal list-inside">
-          <li className="pb-2" v-for="(time, index) in times" :key="index">
-            <p>{{ time.time }} seconds</p>
-            <p>Scramble - {{ time.scramble }}</p>
-          </li>
-        </ol>
-      </div>
+    <div className="container flex-col items-center place-content-center mt-20 ml-20">
+      <twisty-player
+        ref="twistyPlayer"
+        background="none"
+        controlPanel="none"
+        visualization="2D"
+      ></twisty-player>
     </div>
     <div className="container flex flex-col items-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
@@ -62,13 +46,29 @@
         </button>
       </div>
     </div>
-    <div className="container flex-col items-center place-content-center mt-20">
-      <twisty-player
-        ref="twistyPlayer"
-        background="none"
-        controlPanel="none"
-        visualization="2D"
-      ></twisty-player>
+    <div className="container ml-10 pr-6">
+      <p className="span-2 text-lg">
+        Average of last 5: {{ calculateAverage(5) }}
+      </p>
+      <p className="span-2 text-lg">
+        Average of last 12: {{ calculateAverage(12) }}
+      </p>
+      <p className="span-2 text-lg mt-10 ">Times:</p>
+      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
+        <ol className="list-decimal list-inside">
+          <li className="pb-2" v-for="(time, index) in times" :key="index">
+            <p>{{ time.time }} seconds</p>
+            <p>Scramble - {{ time.scramble }}</p>
+          </li>
+        </ol>
+      </div>
+      <button
+        className="btn btn-outline mt-4"
+        @click="resetTimes"
+        :disabled="isRunning" 
+      >
+        Reset Times
+      </button>
     </div>
   </div>
 </template>
