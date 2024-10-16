@@ -16,7 +16,10 @@
           <option value="100">Last 100</option>
         </select>
       </div>
-      <Line :data="lineData" :options="options" className="ml-4" />
+      <Line :data="lineData" :options="options" className="ml-4 mt-8" />
+      <div>
+        <p>Dnf Rate {{ dnfRate.toFixed(2) }}</p>
+      </div>
     </div>
 
     <div className="container ml-10">
@@ -50,7 +53,6 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  scales,
 } from "chart.js";
 import { Line } from "vue-chartjs";
 
@@ -114,9 +116,10 @@ const lineData = computed(() => ({
   labels: labels.value,
   datasets: [
     {
+      label: "Solves",
       data: data.value,
       backgroundColor: "#FFFFFF",
-      borderColor: "#FF0000",
+      borderColor: "#03e3fc",
     },
   ],
 }));
@@ -125,25 +128,36 @@ const options = {
   responsive: true,
   plugins: {
     legend: {
-      display: false,
+      display: true,
+      labels: {
+        color: "white",
+      },
     },
   },
   scales: {
     x: {
+      ticks:{
+        color: "white",
+      },
       display: true,
       title: {
         display: true,
         text: "Date",
+        color: "white",
         font: {
           size: 20,
         },
       },
     },
     y: {
+      ticks: {
+        color: "white",
+      },
       display: true,
       title: {
         display: true,
         text: "Time",
+        color: "white",
         font: {
           size: 20,
         },
