@@ -109,6 +109,8 @@ const totalSolves = computed(() => {
   return props.times.length;
 });
 
+const completeTimes = totalSolves.value - dnfs.value - plusTwos.value;
+
 const labels = computed(() => {
   return props.times.slice(-lineFilter.value).map((time) => {
     const date = new Date(time.solved_at);
@@ -145,11 +147,11 @@ const lineData = computed(() => ({
 }));
 
 const barData = computed(() => ({
-  labels: ["DNFs", "+2s", "Solves"],
+  labels: ["DNFs", "+2s", "Completed"],
   datasets: [
     {
-      label: "DNFs, +2s and Solves Count",
-      data: [dnfs.value, plusTwos.value, totalSolves.value],
+      label: "Solve Type Count",
+      data: [dnfs.value, plusTwos.value, completeTimes],
       backgroundColor: "#03e3fc",
     },
   ],
@@ -215,7 +217,7 @@ const barOptions = {
       display: true,
       title: {
         display: true,
-        text: "DNFs, +2s and Solves",
+        text: "DNFs, +2s and Completed Solves",
         color: "white",
         font: {
           size: 20,

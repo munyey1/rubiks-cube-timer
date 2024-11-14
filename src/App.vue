@@ -54,7 +54,7 @@ onMounted(() => {
       </div>
     </div>
     <div>
-      <button className="btn btn-outline mt-6" @click="supabase.auth.signOut()">
+      <button className="btn btn-outline my-6" @click="supabase.auth.signOut()">
         Sign out
       </button>
     </div>
