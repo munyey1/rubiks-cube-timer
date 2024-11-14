@@ -18,23 +18,25 @@
       </div>
       <Line :data="lineData" :options="lineOptions" className="ml-4 mt-8" />
       <Bar :data="barData" :options="barOptions" className="ml-4 mt-10" />
-      <div>
-        <p>Dnf Rate {{ dnfRate.toFixed(2) }}</p>
-      </div>
     </div>
 
     <div className="container ml-10">
-      <p className="text-lg">Average of last 5: {{ getAverage(5) }}</p>
-      <p className="text-lg">Average of last 12: {{ getAverage(12) }}</p>
-      <p className="text-lg">Average of last 50: {{ getAverage(50) }}</p>
-      <h2 className="text-lg mt-10 ">Times:</h2>
-      <div className="mr-20 overflow-y-scroll max-h-80">
-        <ol className="list-decimal list-inside">
-          <li className="pb-2" v-for="(time, index) in times" :key="index">
-            <p>{{ time.time }} seconds</p>
-            <p>Scramble - {{ time.scramble }}</p>
-          </li>
-        </ol>
+      <div className="fixed">
+        <p>Total Solves: {{ totalSolves }}</p>
+        <p>Average of last 5: {{ getAverage(5) }}</p>
+        <p>Average of last 12: {{ getAverage(12) }}</p>
+        <p>Average of last 50: {{ getAverage(50) }}</p>
+        <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
+        <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
+        <h2 className="text-lg mt-10 ">Times:</h2>
+        <div className="mr-20 overflow-y-scroll max-h-96">
+          <ol className="list-decimal list-inside">
+            <li className="pb-2" v-for="(time, index) in times" :key="index">
+              <p>{{ time.time }} seconds</p>
+              <p>Scramble - {{ time.scramble }}</p>
+            </li>
+          </ol>
+        </div>
       </div>
     </div>
   </div>

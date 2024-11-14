@@ -10,7 +10,7 @@
 }
 
 .z-10 {
-  z-index: 10; /* Ensure the timer and controls are above the overlay */
+  z-index: 10; 
 }
 </style>
 
@@ -20,7 +20,9 @@
       v-if="isRunning || (!isInspection && !isRunning)"
       class="dark-overlay"
     ></div>
-    <div className="container flex-col items-center place-content-center mt-20 ml-20">
+    <div
+      className="container flex-col items-center place-content-center mt-20 ml-20 "
+    >
       <twisty-player
         ref="twistyPlayer"
         background="none"
@@ -37,7 +39,7 @@
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
-      <div className="my-4">
+      <div className="my-14">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
@@ -47,12 +49,8 @@
       </div>
     </div>
     <div className="container ml-10 pr-6">
-      <p className="span-2 text-lg">
-        Average of last 5: {{ calculateAverage(5) }}
-      </p>
-      <p className="span-2 text-lg">
-        Average of last 12: {{ calculateAverage(12) }}
-      </p>
+      <p>Average of last 5: {{ calculateAverage(5) }}</p>
+      <p>Average of last 12: {{ calculateAverage(12) }}</p>
       <p className="span-2 text-lg mt-10 ">Times:</p>
       <div className="span-2 mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
@@ -65,7 +63,7 @@
       <button
         className="btn btn-outline mt-4"
         @click="resetTimes"
-        :disabled="isRunning" 
+        :disabled="isRunning"
       >
         Reset Times
       </button>
@@ -158,7 +156,11 @@ export default {
     stop() {
       const date = new Date(Date.now()).toISOString();
       this.getScramble();
-      this.times.push({ time: this.elapsedTime, solved_at: date ,scramble: this.scramble });
+      this.times.push({
+        time: this.elapsedTime,
+        solved_at: date,
+        scramble: this.scramble,
+      });
       this.insertTimes();
       this.isStopped = true;
       this.isRunning = false;
