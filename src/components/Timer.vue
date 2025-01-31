@@ -1,18 +1,184 @@
-<style scoped>
-.dark-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
+<script setup>
+import { ref, onMounted, onBeforeUnmount, defineProps } from "vue";
+import { randomScrambleForEvent } from "cubing/scramble"; 
+import { supabase } from "../supabase";
 
-.z-10 {
-  z-index: 10; 
-}
-</style>
+import { calculateAverage } from "../composables/calcAvg";
+
+const props = defineProps({
+  session: Object,
+  times: Array,
+});
+
+const startTime = ref(0);
+const elapsedTime = ref("0.00");
+const timer = ref(null);
+const scramble = ref("");
+const isRunning = ref(false);
+const isStopped = ref(true);
+const isInspection = ref(true);
+
+const getLastTime = async () => {
+  const { data, error } = await supabase
+    .from("solves")
+    .select("*")
+    .eq("user_id", props.session.user.id)
+    .order("id", { ascending: false })
+    .limit(1);
+  if (error) {
+    console.error("Error fetching last time", error);
+  } else {
+    return data;
+  }
+};
+
+const getTimes = async () => {
+  const { data, error } = await supabase
+    .from("solves")
+    .select("*")
+    .eq("user_id", props.session.user.id);
+  if (error) {
+    console.error("Error fetching times", error);
+  } else {
+    for (let i = 0; i < data.length; i++) {
+      props.times.value.push(data[i]);
+    }
+  }
+};
+
+const insertTimes = async () => {
+  const { error } = await supabase.from("solves").insert([
+    {
+      user_id: props.session.user.id,
+      time: elapsedTime.value,
+      scramble: scramble.value,
+    },
+  ]);
+  if (error) {
+    console.error("Error inserting times", error);
+  }
+};
+
+const inspection = () => {
+  startTime.value = 15;
+  timer.value = setInterval(() => {
+    elapsedTime.value = (startTime.value -= 0.01).toFixed(2).toString();
+    isInspection.value = false;
+    if (startTime.value <= 0) {
+      clearInterval(timer.value);
+      stop();
+    }
+  }, 10);
+};
+
+const start = () => {
+  isStopped.value = false;
+  isRunning.value = true;
+  startTime.value = Date.now() - elapsedTime.value * 1000;
+  timer.value = setInterval(() => {
+    elapsedTime.value = ((Date.now() - startTime.value) / 1000)
+      .toFixed(2)
+      .toString();
+  }, 10);
+};
+
+const stop = () => {
+  const date = new Date(Date.now()).toISOString();
+  getScramble();
+  props.times.value.push({
+    time: elapsedTime.value,
+    solved_at: date,
+    scramble: scramble.value,
+  });
+  insertTimes();
+  isStopped.value = true;
+  isRunning.value = false;
+  isInspection.value = true;
+  clearInterval(timer.value);
+};
+
+const resetTimes = () => {
+  props.times.value = [];
+};
+
+const onUpEvent = (event) => {
+  if (event.code === "Space") {
+    if (isStopped.value && isInspection.value) {
+      inspection();
+    }
+    if (!isStopped.value && !isInspection.value) {
+      stop();
+    }
+    if (isStopped.value && !isInspection.value) {
+      elapsedTime.value = "0.00";
+      clearInterval(timer.value);
+      start();
+    }
+  }
+};
+
+const getScramble = async () => {
+  const scramble = await randomScrambleForEvent("333");
+  scramble.value = scramble.toString();
+  updateTwistyPlayer();
+};
+
+const updateTwistyPlayer = () => {
+  const twistyPlayer = $refs.twistyPlayer;
+  twistyPlayer.alg = scramble.value;
+};
+
+const plus2 = async () => {
+  const time = props.times.value[props.times.value.length - 1].time;
+  if (time == "DNF") {
+    return;
+  } else {
+    const plustwo = Number(time);
+    props.times.value[props.times.value.length - 1].time = (plustwo + 2).toFixed(2);
+    props.times.value[props.times.value.length - 1].time += "(+)";
+    const solve = await getLastTime();
+    const { error } = await supabase
+      .from("solves")
+      .update({
+        time: props.times.value[props.times.value.length - 1].time,
+        plus_two: true,
+      })
+      .eq("id", solve[0].id);
+    if (error) {
+      console.error("Error updating plus two", error);
+    }
+  }
+};
+
+const dnf = async () => {
+  props.times.value[props.times.value.length - 1].time = "DNF";
+  const solve = await getLastTime();
+  const { error } = await supabase
+    .from("solves")
+    .update({ time: "DNF", dnf: true })
+    .eq("id", solve[0].id);
+  if (error) {
+    console.error("Error updating DNF", error);
+  }
+};
+
+const calculateAverage = (num) => {
+  return calculateAverage(num, props.times.value);
+};
+
+onMounted(() => {
+  window.addEventListener("keyup", onUpEvent);
+  getScramble();
+  getTimes();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keyup", onUpEvent);
+});
+
+
+
+</script>
 
 <template>
   <div className="container min-w-full grid grid-cols-3 mt-10">
@@ -71,179 +237,18 @@
   </div>
 </template>
 
-<script>
-import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scramble";
-import { supabase } from "../supabase";
+<style scoped>
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
 
-import { calculateAverage } from "../composables/calcAvg";
-
-export default {
-  props: {
-    session: Object,
-    times: Array,
-  },
-  data() {
-    return {
-      startTime: 0,
-      elapsedTime: "0.00",
-      timer: null,
-      scramble: "",
-      isRunning: false,
-      isStopped: true,
-      isInspection: true,
-    };
-  },
-  methods: {
-    async getLastTime() {
-      const { data, error } = await supabase
-        .from("solves")
-        .select("*")
-        .eq("user_id", this.session.user.id)
-        .order("id", { ascending: false })
-        .limit(1);
-      if (error) {
-        console.error("Error fetching last time", error);
-      } else {
-        return data;
-      }
-    },
-    async getTimes() {
-      const { data, error } = await supabase
-        .from("solves")
-        .select("*")
-        .eq("user_id", this.session.user.id);
-      if (error) {
-        console.error("Error fetching times", error);
-      } else {
-        for (let i = 0; i < data.length; i++) {
-          this.times.push(data[i]);
-        }
-      }
-    },
-    async insertTimes() {
-      const { error } = await supabase.from("solves").insert([
-        {
-          user_id: this.session.user.id,
-          time: this.elapsedTime,
-          scramble: this.scramble,
-        },
-      ]);
-      if (error) {
-        console.error("Error inserting times", error);
-      }
-    },
-    inspection() {
-      this.startTime = 15;
-      this.timer = setInterval(() => {
-        this.elapsedTime = (this.startTime -= 0.01).toFixed(2).toString();
-        this.isInspection = false;
-        if (this.startTime <= 0) {
-          clearInterval(this.timer);
-          this.stop();
-        }
-      }, 10);
-    },
-    start() {
-      this.isStopped = false;
-      this.isRunning = true;
-      this.startTime = Date.now() - this.elapsedTime * 1000;
-      this.timer = setInterval(() => {
-        this.elapsedTime = ((Date.now() - this.startTime) / 1000)
-          .toFixed(2)
-          .toString();
-      }, 10);
-    },
-    stop() {
-      const date = new Date(Date.now()).toISOString();
-      this.getScramble();
-      this.times.push({
-        time: this.elapsedTime,
-        solved_at: date,
-        scramble: this.scramble,
-      });
-      this.insertTimes();
-      this.isStopped = true;
-      this.isRunning = false;
-      this.isInspection = true;
-      clearInterval(this.timer);
-    },
-    resetTimes() {
-      this.times = [];
-    },
-    onUpEvent(event) {
-      if (event.code === "Space") {
-        if (this.isStopped && this.isInspection) {
-          // this.isStopped && !this.isRunning && this.isInspection
-          this.inspection();
-        }
-        if (!this.isStopped && !this.isInspection) {
-          // !this.isStopped && this.isRunning && !this.isInspection
-          this.stop();
-        }
-        if (this.isStopped && !this.isInspection) {
-          // this.isStopped && !this.isRunning && !this.isInspection
-          this.elapsedTime = "0.00";
-          clearInterval(this.timer);
-          this.start();
-        }
-      }
-    },
-    async getScramble() {
-      const scramble = await randomScrambleForEvent("333");
-      this.scramble = scramble.toString();
-      this.updateTwistyPlayer();
-    },
-    updateTwistyPlayer() {
-      const twistyPlayer = this.$refs.twistyPlayer;
-      twistyPlayer.alg = this.scramble;
-    },
-    async plus2() {
-      const time = this.times[this.times.length - 1].time;
-      if (time == "DNF") {
-        return;
-      } else {
-        // Add 2 seconds to the last time
-        // Format: time + 2(+)
-        // Update the time in the database
-        const plustwo = Number(time);
-        this.times[this.times.length - 1].time = (plustwo + 2).toFixed(2);
-        this.times[this.times.length - 1].time += "(+)";
-        // Use await here to work with promises
-        const solve = await this.getLastTime();
-        const { error } = await supabase
-          .from("solves")
-          .update({
-            time: this.times[this.times.length - 1].time,
-            plus_two: true,
-          })
-          .eq("id", solve[0].id);
-        if (error) {
-          console.error("Error updating plus two", error);
-        }
-      }
-    },
-    async dnf() {
-      this.times[this.times.length - 1].time = "DNF";
-      const solve = await this.getLastTime();
-      const { error } = await supabase
-        .from("solves")
-        .update({ time: "DNF", dnf: true })
-        .eq("id", solve[0].id);
-      if (error) {
-        console.error("Error updating DNF", error);
-      }
-    },
-    calculateAverage(num) {
-      return calculateAverage(num, this.times);
-    },
-  },
-  mounted() {
-    window.addEventListener("keyup", this.onUpEvent);
-    this.getScramble();
-    this.getTimes();
-  },
-  beforeUnmount() {
-    window.removeEventListener("keyup", this.onUpEvent);
-  },
-};
-</script>
+.z-10 {
+  z-index: 10; 
+}
+</style>
