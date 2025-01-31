@@ -42,7 +42,7 @@ const getTimes = async () => {
     console.error("Error fetching times", error);
   } else {
     for (let i = 0; i < data.length; i++) {
-      props.times.value.push(data[i]);
+      props.times.push(data[i]);
     }
   }
 };
@@ -86,7 +86,7 @@ const start = () => {
 const stop = () => {
   const date = new Date(Date.now()).toISOString();
   getScramble();
-  props.times.value.push({
+  props.times.push({
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
@@ -99,7 +99,7 @@ const stop = () => {
 };
 
 const resetTimes = () => {
-  props.times.value = [];
+  props.times = [];
 };
 
 const onUpEvent = (event) => {
@@ -130,20 +130,20 @@ const updateTwistyPlayer = () => {
 };
 
 const plus2 = async () => {
-  const time = props.times.value[props.times.value.length - 1].time;
+  const time = props.times[props.times.length - 1].time;
   if (time == "DNF") {
     return;
   } else {
     const plustwo = Number(time);
-    props.times.value[props.times.value.length - 1].time = (
+    props.times[props.times.length - 1].time = (
       plustwo + 2
     ).toFixed(2);
-    props.times.value[props.times.value.length - 1].time += "(+)";
+    props.times[props.times.length - 1].time += "(+)";
     const solve = await getLastTime();
     const { error } = await supabase
       .from("solves")
       .update({
-        time: props.times.value[props.times.value.length - 1].time,
+        time: props.times[props.times.length - 1].time,
         plus_two: true,
       })
       .eq("id", solve[0].id);
@@ -154,7 +154,7 @@ const plus2 = async () => {
 };
 
 const dnf = async () => {
-  props.times.value[props.times.value.length - 1].time = "DNF";
+  props.times[props.times.length - 1].time = "DNF";
   const solve = await getLastTime();
   const { error } = await supabase
     .from("solves")
@@ -166,7 +166,7 @@ const dnf = async () => {
 };
 
 const getAverage = (num) => {
-  return calculateAverage(num, props.times.value);
+  return calculateAverage(num, props.times);
 };
 
 onMounted(() => {
