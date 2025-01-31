@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, defineProps } from "vue";
-import { randomScrambleForEvent } from "cubing/scramble"; 
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { TwistyPlayer } from "cubing/twisty";
+import { randomScrambleForEvent } from "cubing/scramble";
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/calcAvg";
@@ -134,7 +135,9 @@ const plus2 = async () => {
     return;
   } else {
     const plustwo = Number(time);
-    props.times.value[props.times.value.length - 1].time = (plustwo + 2).toFixed(2);
+    props.times.value[props.times.value.length - 1].time = (
+      plustwo + 2
+    ).toFixed(2);
     props.times.value[props.times.value.length - 1].time += "(+)";
     const solve = await getLastTime();
     const { error } = await supabase
@@ -162,7 +165,7 @@ const dnf = async () => {
   }
 };
 
-const calculateAverage = (num) => {
+const getAverage = (num) => {
   return calculateAverage(num, props.times.value);
 };
 
@@ -175,9 +178,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener("keyup", onUpEvent);
 });
-
-
-
 </script>
 
 <template>
@@ -189,12 +189,13 @@ onBeforeUnmount(() => {
     <div
       className="container flex-col items-center place-content-center mt-20 ml-20 "
     >
-      <twisty-player
+      <TwistyPlayer
         ref="twistyPlayer"
         background="none"
         controlPanel="none"
         visualization="2D"
-      ></twisty-player>
+      >
+      </TwistyPlayer>
     </div>
     <div className="container flex flex-col items-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
@@ -215,8 +216,8 @@ onBeforeUnmount(() => {
       </div>
     </div>
     <div className="container ml-10 pr-6">
-      <p>Average of last 5: {{ calculateAverage(5) }}</p>
-      <p>Average of last 12: {{ calculateAverage(12) }}</p>
+      <p>Average of last 5: {{ getAverage(5) }}</p>
+      <p>Average of last 12: {{ getAverage(12) }}</p>
       <p className="span-2 text-lg mt-10 ">Times:</p>
       <div className="span-2 mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
@@ -249,6 +250,6 @@ onBeforeUnmount(() => {
 }
 
 .z-10 {
-  z-index: 10; 
+  z-index: 10;
 }
 </style>
