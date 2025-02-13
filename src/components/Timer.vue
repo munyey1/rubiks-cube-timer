@@ -1,76 +1,3 @@
-<style scoped>
-.dark-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-.z-10 {
-  z-index: 10; 
-}
-</style>
-
-<template>
-  <div className="container min-w-full grid grid-cols-3 mt-10">
-    <div
-      v-if="isRunning || (!isInspection && !isRunning)"
-      class="dark-overlay"
-    ></div>
-    <div
-      className="container flex-col items-center place-content-center mt-20 ml-20 "
-    >
-      <twisty-player
-        ref="twistyPlayer"
-        background="none"
-        controlPanel="none"
-        visualization="2D"
-      ></twisty-player>
-    </div>
-    <div className="container flex flex-col items-center">
-      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
-      <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
-        Inspection:
-      </h2>
-      <h2 className="text-5xl mt-36 z-10" v-if="isRunning || isInspection">
-        Time:
-      </h2>
-      <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
-      <div className="my-14">
-        <button className="btn w-20" @click="plus2" :disabled="isRunning">
-          +2
-        </button>
-        <button className="btn w-20" @click="dnf" :disabled="isRunning">
-          DNF
-        </button>
-      </div>
-    </div>
-    <div className="container ml-10 pr-6">
-      <p>Average of last 5: {{ calculateAverage(5) }}</p>
-      <p>Average of last 12: {{ calculateAverage(12) }}</p>
-      <p className="span-2 text-lg mt-10 ">Times:</p>
-      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
-        <ol className="list-decimal list-inside">
-          <li className="pb-2" v-for="(time, index) in times" :key="index">
-            <p>{{ time.time }} seconds</p>
-            <p>Scramble - {{ time.scramble }}</p>
-          </li>
-        </ol>
-      </div>
-      <button
-        className="btn btn-outline mt-4"
-        @click="resetTimes"
-        :disabled="isRunning"
-      >
-        Reset Times
-      </button>
-    </div>
-  </div>
-</template>
-
 <script>
 import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scramble";
 import { supabase } from "../supabase";
@@ -247,3 +174,76 @@ export default {
   },
 };
 </script>
+
+<template>
+  <div className="container min-w-full grid grid-cols-3 mt-10">
+    <div
+      v-if="isRunning || (!isInspection && !isRunning)"
+      class="dark-overlay"
+    ></div>
+    <div
+      className="container flex-col items-center place-content-center mt-20 ml-20 "
+    >
+      <twisty-player
+        ref="twistyPlayer"
+        background="none"
+        controlPanel="none"
+        visualization="2D"
+      ></twisty-player>
+    </div>
+    <div className="container flex flex-col items-center">
+      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
+      <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
+        Inspection:
+      </h2>
+      <h2 className="text-5xl mt-36 z-10" v-if="isRunning || isInspection">
+        Time:
+      </h2>
+      <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
+      <div className="my-14">
+        <button className="btn w-20" @click="plus2" :disabled="isRunning">
+          +2
+        </button>
+        <button className="btn w-20" @click="dnf" :disabled="isRunning">
+          DNF
+        </button>
+      </div>
+    </div>
+    <div className="container ml-10 pr-6">
+      <p>Average of last 5: {{ calculateAverage(5) }}</p>
+      <p>Average of last 12: {{ calculateAverage(12) }}</p>
+      <p className="span-2 text-lg mt-10 ">Times:</p>
+      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
+        <ol className="list-decimal list-inside">
+          <li className="pb-2" v-for="(time, index) in times" :key="index">
+            <p>{{ time.time }} seconds</p>
+            <p>Scramble - {{ time.scramble }}</p>
+          </li>
+        </ol>
+      </div>
+      <button
+        className="btn btn-outline mt-4"
+        @click="resetTimes"
+        :disabled="isRunning"
+      >
+        Reset Times
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.z-10 {
+  z-index: 10; 
+}
+</style>
