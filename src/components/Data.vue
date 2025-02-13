@@ -1,47 +1,3 @@
-<style scoped></style>
-
-<template>
-  <div className="container min-w-full grid grid-cols-3 mt-10">
-    <div className="container col-span-2 flex flex-col items-center">
-      <p>Best Time: {{ bestTime() }} seconds</p>
-      <p>Worst Time: {{ worstTime() }} seconds</p>
-      <div className="mt-2">
-        <select v-model="lineFilter">
-          <option value="" selected disabled>Please select</option>
-          <option value="0">All</option>
-          <option value="5">Last 5</option>
-          <option value="12">Last 12</option>
-          <option value="25">Last 25</option>
-          <option value="50">Last 50</option>
-          <option value="100">Last 100</option>
-        </select>
-      </div>
-      <Line :data="lineData" :options="lineOptions" className="ml-4 mt-8" />
-      <Bar :data="barData" :options="barOptions" className="ml-4 mt-10" />
-    </div>
-
-    <div className="container ml-10">
-      <div className="fixed">
-        <p>Total Solves: {{ totalSolves }}</p>
-        <p>Average of last 5: {{ getAverage(5) }}</p>
-        <p>Average of last 12: {{ getAverage(12) }}</p>
-        <p>Average of last 50: {{ getAverage(50) }}</p>
-        <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
-        <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
-        <h2 className="text-lg mt-10 ">Times:</h2>
-        <div className="mr-20 overflow-y-scroll max-h-96">
-          <ol className="list-decimal list-inside">
-            <li className="pb-2" v-for="(time, index) in times" :key="index">
-              <p>{{ time.time }} seconds</p>
-              <p>Scramble - {{ time.scramble }}</p>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { computed, ref } from "vue";
 import { calculateAverage } from "../composables/calcAvg";
@@ -260,3 +216,48 @@ const worstTime = () => {
   return worst === -Infinity ? null : worst;
 };
 </script>
+
+
+<template>
+  <div className="container min-w-full grid grid-cols-3 mt-10">
+    <div className="container col-span-2 flex flex-col items-center">
+      <p>Best Time: {{ bestTime() }} seconds</p>
+      <p>Worst Time: {{ worstTime() }} seconds</p>
+      <div className="mt-2">
+        <select v-model="lineFilter">
+          <option value="" selected disabled>Please select</option>
+          <option value="0">All</option>
+          <option value="5">Last 5</option>
+          <option value="12">Last 12</option>
+          <option value="25">Last 25</option>
+          <option value="50">Last 50</option>
+          <option value="100">Last 100</option>
+        </select>
+      </div>
+      <Line :data="lineData" :options="lineOptions" className="ml-4 mt-8" />
+      <Bar :data="barData" :options="barOptions" className="ml-4 mt-10" />
+    </div>
+
+    <div className="container ml-10">
+      <div className="fixed">
+        <p>Total Solves: {{ totalSolves }}</p>
+        <p>Average of last 5: {{ getAverage(5) }}</p>
+        <p>Average of last 12: {{ getAverage(12) }}</p>
+        <p>Average of last 50: {{ getAverage(50) }}</p>
+        <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
+        <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
+        <h2 className="text-lg mt-10 ">Times:</h2>
+        <div className="mr-20 overflow-y-scroll max-h-96">
+          <ol className="list-decimal list-inside">
+            <li className="pb-2" v-for="(time, index) in times" :key="index">
+              <p>{{ time.time }} seconds</p>
+              <p>Scramble - {{ time.scramble }}</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped></style>
