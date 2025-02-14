@@ -249,10 +249,11 @@ const worstTime = () => {
         <h2 className="text-lg mt-10 ">Times:</h2>
         <div className="mr-20 overflow-y-scroll max-h-96">
           <ol className="list-decimal list-inside">
-            <li className="pb-2" v-for="(time, index) in times" :key="index">
+            <ul className="pb-2" v-for="(time, index) in times.slice().reverse()" :key="index">
+              <p>{{ times.length - index }}.</p>
               <p>{{ time.time }} seconds</p>
               <p>Scramble - {{ time.scramble }}</p>
-            </li>
+            </ul>
           </ol>
         </div>
       </div>
