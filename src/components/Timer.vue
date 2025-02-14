@@ -41,9 +41,8 @@ const getTimes = async () => {
   if (error) {
     console.error("Error fetching times", error);
   } else {
-    for (let i = 0; i < data.length; i++) {
-      props.times.push(data[i]);
-    }
+    props.times.length = 0; // Clear the array first
+    props.times.push(...data); // Push new data into the empty array
   }
 };
 
