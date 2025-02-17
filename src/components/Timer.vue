@@ -177,6 +177,10 @@ const onUpEvent = (event) => {
 const calAvg = (num) => {
   return calculateAverage(num, props.times);
 };
+
+const tst = () => {
+  console.log("test");
+};
 </script>
 
 <template>
@@ -196,7 +200,7 @@ const calAvg = (num) => {
         scramble=""
       ></twisty-player>
     </div>
-    <div className="container flex flex-col items-center">
+    <div @click="tst" className="container flex flex-col items-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
