@@ -12,8 +12,9 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  ArcElement
 } from "chart.js";
-import { Line, Bar } from "vue-chartjs";
+import { Line, Bar, Pie } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -21,6 +22,7 @@ ChartJS.register(
   BarElement,
   PointElement,
   LineElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend
@@ -65,7 +67,9 @@ const totalSolves = computed(() => {
   return props.times.length;
 });
 
-const completeTimes = totalSolves.value - dnfs.value - plusTwos.value;
+const completeTimes = computed(() => {
+  return props.times.length - dnfs.value - plusTwos.value;
+});
 
 const labels = computed(() => {
   return props.times.slice(-lineFilter.value).map((time) => {
@@ -98,17 +102,6 @@ const lineData = computed(() => ({
       data: data.value,
       backgroundColor: "#FFFFFF",
       borderColor: "#03e3fc",
-    },
-  ],
-}));
-
-const barData = computed(() => ({
-  labels: ["DNFs", "+2s", "Completed"],
-  datasets: [
-    {
-      label: "Solve Type Count",
-      data: [dnfs.value, plusTwos.value, completeTimes],
-      backgroundColor: "#03e3fc",
     },
   ],
 }));
@@ -155,6 +148,17 @@ const lineOptions = {
   },
 };
 
+const barData = computed(() => ({
+  labels: ["DNFs", "+2s", "Completed"],
+  datasets: [
+    {
+      label: "Solve Type Count",
+      data: [dnfs.value, plusTwos.value, completeTimes.value],
+      backgroundColor: "#03e3fc",
+    },
+  ],
+}));
+
 const barOptions = {
   responsive: true,
   plugins: {
@@ -197,6 +201,37 @@ const barOptions = {
   },
 };
 
+const pieData = computed(() => ({
+  labels: ["DNFs", "+2s", "Completed"],
+  datasets: [
+    {
+      label: "Count",
+      data: [dnfs.value, plusTwos.value, completeTimes.value],
+      backgroundColor: ["#ff0000", "#03e3fc", "#00ff00"],
+    },
+  ],
+}));
+
+const pieOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      labels: {
+        color: "white",
+      },
+    },
+    title: {
+      display: true,
+      text: "Solve Type Count",
+      color: "white",
+      font: {
+        size: 20,
+      },
+    },
+  },
+};
+
 // Methods
 const getAverage = (num) => {
   return calculateAverage(num, props.times);
@@ -234,8 +269,10 @@ const worstTime = () => {
           <option value="100">Last 100</option>
         </select>
       </div>
-      <Line :data="lineData" :options="lineOptions" className="ml-4 mt-8" />
-      <Bar :data="barData" :options="barOptions" className="ml-4 mt-10" />
+      <Line :data="lineData" :options="lineOptions" className="mt-8" />
+      <div className="w-1/2 mt-10 ">
+        <Pie :data="pieData" :options="pieOptions" className="justify-self-center"/>
+      </div>
     </div>
 
     <div className="container ml-10">
