@@ -97,10 +97,6 @@ const stop = () => {
   clearInterval(timer.value);
 };
 
-const resetTimes = () => {
-  props.times = [];
-};
-
 const plus2 = async () => {
   const time = props.times[props.times.length - 1].time;
   if (time == "DNF") {
@@ -235,13 +231,6 @@ const tst = () => {
           </ul>
         </ol>
       </div>
-      <button
-        className="btn btn-outline mt-4"
-        @click="resetTimes"
-        :disabled="isRunning"
-      >
-        Reset Times
-      </button>
     </div>
   </div>
 </template>
