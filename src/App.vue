@@ -34,11 +34,11 @@ onMounted(() => {
         type="radio"
         name="my_tabs_1"
         role="tab"
-        className="tab text-xl ml-20"
+        className="tab text-xl lg:ml-20 sm:ml-0"
         aria-label="Timer"
         defaultChecked
       />
-      <div role="tabpanel" className="tab-content p-10">
+      <div role="tabpanel" className="tab-content lg:p-10 sm:p-0">
         <Timer :session="session" :times="times"/>
       </div>
 

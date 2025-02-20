@@ -18,6 +18,7 @@ const scramble = ref("");
 const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
+const screenWidth = ref(window.innerWidth);
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -83,8 +84,8 @@ const start = () => {
 };
 
 const stop = () => {
-  const date = new Date(Date.now()).toISOString();
   getScramble();
+  const date = new Date(Date.now()).toISOString();
   props.times.push({
     time: elapsedTime.value,
     solved_at: date,
@@ -145,15 +146,6 @@ const updateTwistyPlayer = () => {
   twistyPlayer.alg = scramble.value;
 };
 
-onMounted(() => {
-  getTimes();
-});
-
-onBeforeMount(() => {
-  window.addEventListener("keyup", onUpEvent);
-  getScramble();
-});
-
 const onUpEvent = (event) => {
   if (event.code === "Space") {
     if (isStopped.value && isInspection.value) {
@@ -176,24 +168,40 @@ const calAvg = (num) => {
 
 const tst = () => {
   console.log("test");
+  console.log(screenWidth.value);
+  console.log(scramble.value);
 };
+
+const updateScreenWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  getTimes();
+  window.addEventListener("resize", updateScreenWidth);
+});
+
+onBeforeMount(() => {
+  getScramble();
+  window.addEventListener("keyup", onUpEvent);
+  window.removeEventListener("resize", updateScreenWidth);
+});
 </script>
 
 <template>
-  <div className="container min-w-full grid grid-cols-3 mt-10">
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10">
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
       class="dark-overlay"
     ></div>
     <div
-      className="container flex-col items-center place-content-center mt-20 ml-20 "
+      v-if="screenWidth > 640" className="container flex-col items-center place-content-center lg:mt-20 sm:mt-0 lg:ml-20 sm:ml-0"
     >
       <twisty-player
         ref="twistyPlayer"
         background="none"
         controlPanel="none"
         visualization="2D"
-        scramble=""
       ></twisty-player>
     </div>
     <div @click="tst" className="container flex flex-col items-center">
@@ -214,7 +222,7 @@ const tst = () => {
         </button>
       </div>
     </div>
-    <div className="container ml-10 pr-6">
+    <div className="container ml-10">
       <p>Average of last 5: {{ calAvg(5) }}</p>
       <p>Average of last 12: {{ calAvg(12) }}</p>
       <p className="span-2 text-lg mt-10 ">Times:</p>
