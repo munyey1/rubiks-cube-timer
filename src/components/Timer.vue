@@ -189,13 +189,17 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10">
+  <div
+    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10"
+  >
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
       class="dark-overlay"
     ></div>
     <div
-      v-if="screenWidth > 640" className="container flex-col items-center place-content-center lg:mt-20 sm:mt-0 lg:ml-20 sm:ml-0"
+      @click="updateTwistyPlayer"
+      v-if="screenWidth > 640"
+      className="container flex-col items-center place-content-center lg:mt-20 sm:mt-0 lg:ml-20 sm:ml-0"
     >
       <twisty-player
         ref="twistyPlayer"
