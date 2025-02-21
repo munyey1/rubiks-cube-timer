@@ -207,7 +207,7 @@ const pieData = computed(() => ({
     {
       label: "Count",
       data: [dnfs.value, plusTwos.value, completeTimes.value],
-      backgroundColor: ["#ff0000", "#03e3fc", "#00ff00"],
+      backgroundColor: ["#ff0000", "#eb8f34", "#03e3fc"],
     },
   ],
 }));
