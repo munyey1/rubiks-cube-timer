@@ -48,6 +48,7 @@ const getTimes = async () => {
 };
 
 const insertTimes = async () => {
+  if (isStopped.value) return;
   const { error } = await supabase.from("solves").insert([
     {
       user_id: props.session.user.id,
@@ -84,18 +85,22 @@ const start = () => {
 };
 
 const stop = () => {
-  getScramble();
+  if (isStopped.value) return;
+
+  isStopped.value = true;
+  isRunning.value = false;
+  isInspection.value = true;
+
   const date = new Date(Date.now()).toISOString();
+
   props.times.push({
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
   });
-  insertTimes();
-  isStopped.value = true;
-  isRunning.value = false;
-  isInspection.value = true;
+
   clearInterval(timer.value);
+  insertTimes().then(() => getScramble());
 };
 
 const plus2 = async () => {
@@ -176,15 +181,20 @@ const updateScreenWidth = () => {
   screenWidth.value = window.innerWidth;
 };
 
+const changeScramble = () => {
+  getScramble();
+};
+
 onMounted(() => {
   getTimes();
+  getScramble();
   window.addEventListener("resize", updateScreenWidth);
+  window.addEventListener("keyup", onUpEvent);
 });
 
 onBeforeMount(() => {
-  getScramble();
-  window.addEventListener("keyup", onUpEvent);
   window.removeEventListener("resize", updateScreenWidth);
+  window.removeEventListener("keyup", onUpEvent);
 });
 </script>
 
@@ -199,7 +209,7 @@ onBeforeMount(() => {
     <div
       @click="updateTwistyPlayer"
       v-if="screenWidth > 640"
-      className="container flex-col items-center place-content-center lg:mt-20 sm:mt-0 lg:ml-20 sm:ml-0"
+      className="container flex-col items-center place-content-center lg:pl-20"
     >
       <twisty-player
         ref="twistyPlayer"
@@ -217,7 +227,10 @@ onBeforeMount(() => {
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
-      <div className="my-14">
+      <button className="btn" @click="changeScramble" :disabled="isRunning">
+        Change Scramble
+      </button>
+      <div className="mt-14">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
@@ -226,7 +239,7 @@ onBeforeMount(() => {
         </button>
       </div>
     </div>
-    <div className="container ml-10">
+    <div className="container pl-10">
       <p>Average of last 5: {{ calAvg(5) }}</p>
       <p>Average of last 12: {{ calAvg(12) }}</p>
       <p className="span-2 text-lg mt-10 ">Times:</p>
@@ -256,9 +269,5 @@ onBeforeMount(() => {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-}
-
-.z-10 {
-  z-index: 10;
 }
 </style>
