@@ -228,10 +228,10 @@ onBeforeMount(() => {
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
-      <button className="btn" @click="changeScramble" :disabled="isRunning">
+      <button className="btn mt-4" @click="changeScramble" :disabled="isRunning">
         Change Scramble
       </button>
-      <div className="mt-14">
+      <div className="my-12">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
@@ -243,8 +243,8 @@ onBeforeMount(() => {
     <div className="container pl-10">
       <p>Average of last 5: {{ calAvg(5) }}</p>
       <p>Average of last 12: {{ calAvg(12) }}</p>
-      <p className="span-2 text-lg mt-10 ">Times:</p>
-      <div className="span-2 mr-20 overflow-y-scroll max-h-80">
+      <p className="text-lg mt-10 ">Times:</p>
+      <div className="mr-20 overflow-y-scroll h-80">
         <ol className="list-decimal list-inside">
           <ul
             className="pb-4"
@@ -252,9 +252,6 @@ onBeforeMount(() => {
             :key="index"
           >
             <p>{{ times.length - index }}.</p>
-            <p>{{ time.time }} seconds</p>
-            <p>Scramble - {{ time.scramble }}</p>
-            <p>Solved at - {{ time.solved_at }}</p>
             <TimeCard :time="time" />
           </ul>
         </ol>
