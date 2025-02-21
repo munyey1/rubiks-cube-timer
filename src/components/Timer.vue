@@ -5,6 +5,7 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scra
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/calcAvg";
+import TimeCard from "./TimeCard.vue";
 
 const props = defineProps({
   session: Object,
@@ -246,13 +247,15 @@ onBeforeMount(() => {
       <div className="span-2 mr-20 overflow-y-scroll max-h-80">
         <ol className="list-decimal list-inside">
           <ul
-            className="pb-2"
+            className="pb-4"
             v-for="(time, index) in times.slice().reverse()"
             :key="index"
           >
             <p>{{ times.length - index }}.</p>
             <p>{{ time.time }} seconds</p>
             <p>Scramble - {{ time.scramble }}</p>
+            <p>Solved at - {{ time.solved_at }}</p>
+            <TimeCard :time="time" />
           </ul>
         </ol>
       </div>
