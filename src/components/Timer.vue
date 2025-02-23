@@ -5,7 +5,6 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scra
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/calcAvg";
-import TimeCard from "./TimeCard.vue";
 
 const props = defineProps({
   session: Object,
@@ -20,6 +19,7 @@ const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
 const screenWidth = ref(window.innerWidth);
+const selectedTime = ref(null);
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -186,6 +186,12 @@ const changeScramble = () => {
   getScramble();
 };
 
+const showModal = (time) => {
+  selectedTime.value = time;
+  const modal = document.getElementById("solve_modal");
+  modal.showModal();
+};
+
 onMounted(() => {
   getTimes();
   getScramble();
@@ -228,7 +234,11 @@ onBeforeMount(() => {
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
-      <button className="btn mt-4" @click="changeScramble" :disabled="isRunning">
+      <button
+        className="btn mt-4"
+        @click="changeScramble"
+        :disabled="isRunning"
+      >
         Change Scramble
       </button>
       <div className="my-12">
@@ -252,10 +262,28 @@ onBeforeMount(() => {
             :key="index"
           >
             <p>{{ times.length - index }}.</p>
-            <TimeCard :time="time" />
+            <p>{{ time.time }} seconds</p>
+            <p>Scramble - {{ time.scramble }}</p>
+            <button class="btn" @click="showModal(time)">More Details</button>
           </ul>
         </ol>
       </div>
+      <dialog id="solve_modal" class="modal">
+        <div v-if="selectedTime" class="modal-box">
+          <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>
+          <p class="py-4">Press ESC key or click outside to close</p>
+          <p>Solved at - {{ selectedTime.solved_at }}</p>
+          <twisty-player
+            background="none"
+            controlPanel="none"
+            visualization="2D"
+            :alg="selectedTime.scramble"
+          ></twisty-player>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   </div>
 </template>
