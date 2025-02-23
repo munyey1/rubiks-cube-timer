@@ -14,7 +14,7 @@ import {
   LineElement,
   ArcElement
 } from "chart.js";
-import { Line, Bar, Pie } from "vue-chartjs";
+import { Line, Pie } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -139,59 +139,6 @@ const lineOptions = {
       title: {
         display: true,
         text: "Time",
-        color: "white",
-        font: {
-          size: 20,
-        },
-      },
-    },
-  },
-};
-
-const barData = computed(() => ({
-  labels: ["DNFs", "+2s", "Completed"],
-  datasets: [
-    {
-      label: "Solve Type Count",
-      data: [dnfs.value, plusTwos.value, completeTimes.value],
-      backgroundColor: "#03e3fc",
-    },
-  ],
-}));
-
-const barOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: true,
-      labels: {
-        color: "white",
-      },
-    },
-  },
-  scales: {
-    x: {
-      ticks:{
-        color: "white",
-      },
-      display: true,
-      title: {
-        display: true,
-        text: "DNFs, +2s and Completed Solves",
-        color: "white",
-        font: {
-          size: 20,
-        },
-      },
-    },
-    y: {
-      ticks: {
-        color: "white",
-      },
-      display: true,
-      title: {
-        display: true,
-        text: "Count",
         color: "white",
         font: {
           size: 20,
