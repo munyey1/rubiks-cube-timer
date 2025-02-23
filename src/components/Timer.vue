@@ -5,6 +5,7 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scra
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/calcAvg";
+import TimeList from "./TimeList.vue";
 
 const props = defineProps({
   session: Object,
@@ -254,36 +255,7 @@ onBeforeMount(() => {
       <p>Average of last 5: {{ calAvg(5) }}</p>
       <p>Average of last 12: {{ calAvg(12) }}</p>
       <p className="text-lg mt-10 ">Times:</p>
-      <div className="mr-20 overflow-y-scroll h-80">
-        <ol className="list-decimal list-inside">
-          <ul
-            className="pb-4"
-            v-for="(time, index) in times.slice().reverse()"
-            :key="index"
-          >
-            <p>{{ times.length - index }}.</p>
-            <p>{{ time.time }} seconds</p>
-            <p>Scramble - {{ time.scramble }}</p>
-            <button class="btn" @click="showModal(time)">More Details</button>
-          </ul>
-        </ol>
-      </div>
-      <dialog id="solve_modal" class="modal">
-        <div v-if="selectedTime" class="modal-box">
-          <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>
-          <p class="py-4">Press ESC key or click outside to close</p>
-          <p>Solved at - {{ selectedTime.solved_at }}</p>
-          <twisty-player
-            background="none"
-            controlPanel="none"
-            visualization="2D"
-            :alg="selectedTime.scramble"
-          ></twisty-player>
-        </div>
-        <form method="dialog" class="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <TimeList :times="times" />
     </div>
   </div>
 </template>
