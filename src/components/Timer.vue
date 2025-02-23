@@ -20,7 +20,6 @@ const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
 const screenWidth = ref(window.innerWidth);
-const selectedTime = ref(null);
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -187,12 +186,6 @@ const changeScramble = () => {
   getScramble();
 };
 
-const showModal = (time) => {
-  selectedTime.value = time;
-  const modal = document.getElementById("solve_modal");
-  modal.showModal();
-};
-
 onMounted(() => {
   getTimes();
   getScramble();
@@ -216,7 +209,7 @@ onBeforeMount(() => {
     ></div>
     <div
       @click="updateTwistyPlayer"
-      v-if="screenWidth > 640"
+      v-show="screenWidth > 640"
       className="container flex-col items-center place-content-center lg:pl-20"
     >
       <twisty-player
