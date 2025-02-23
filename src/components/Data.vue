@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { calculateAverage } from "../composables/calcAvg";
+import TimeList from "./TimeList.vue";
 
 import {
   Chart as ChartJS,
@@ -231,15 +232,7 @@ const worstTime = () => {
         <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
         <h2 className="text-lg mt-10 ">Times:</h2>
-        <div className="mr-20 overflow-y-scroll max-h-96">
-          <ol className="list-decimal list-inside">
-            <ul className="pb-2" v-for="(time, index) in times.slice().reverse()" :key="index">
-              <p>{{ times.length - index }}.</p>
-              <p>{{ time.time }} seconds</p>
-              <p>Scramble - {{ time.scramble }}</p>
-            </ul>
-          </ol>
-        </div>
+        <TimeList :times="times" />
       </div>
     </div>
   </div>

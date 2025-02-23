@@ -5,12 +5,12 @@ const props = defineProps({
   times: Array,
 });
 
+const solve_modal = ref(null);
 const selectedTime = ref(null);
 
 const showModal = (time) => {
   selectedTime.value = time;
-  const modal = document.getElementById("solve_modal");
-  modal.showModal();
+  solve_modal.value?.showModal();
 };
 </script>
 
@@ -30,7 +30,7 @@ const showModal = (time) => {
         </ul>
       </ol>
     </div>
-    <dialog id="solve_modal" class="modal">
+    <dialog ref="solve_modal" class="modal">
       <div v-if="selectedTime" class="modal-box">
         <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>
         <p class="py-4">Press ESC key or click outside to close</p>
