@@ -1,7 +1,7 @@
 <style scoped></style>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted } from "vue";
 import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
@@ -38,7 +38,7 @@ onMounted(() => {
         aria-label="Timer"
         defaultChecked
       />
-      <div role="tabpanel" className="tab-content lg:p-10 sm:p-0">
+      <div role="tabpanel" className="tab-content lg:p-10">
         <Timer :session="session" :times="times"/>
       </div>
 
@@ -49,7 +49,7 @@ onMounted(() => {
         className="tab text-xl"
         aria-label="Data"
       />
-      <div role="tabpanel" className="tab-content p-10">
+      <div role="tabpanel" className="tab-content lg:p-10">
         <DataComponent :session="session" :times="times" />
       </div>
     </div>

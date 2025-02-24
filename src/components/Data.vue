@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { ref, onMounted, onBeforeMount, computed } from "vue";
 import { calculateAverage } from "../composables/calcAvg";
 import TimeList from "./TimeList.vue";
 
@@ -35,6 +35,7 @@ const props = defineProps({
 });
 
 const lineFilter = ref(0);
+const screenWidth = ref(window.innerWidth);
 
 const parseTime = (time) => {
   if (time.includes("(+)")) {
@@ -109,6 +110,7 @@ const lineData = computed(() => ({
 
 const lineOptions = {
   responsive: true,
+  maintainAspectRatio: true,
   plugins: {
     legend: {
       display: true,
@@ -198,12 +200,25 @@ const worstTime = () => {
   const worst = Math.max(...parsedTimes);
   return worst === -Infinity ? null : worst;
 };
+
+const updateScreenWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", updateScreenWidth);
+});
+
+onBeforeMount(() => {
+  window.removeEventListener("resize", updateScreenWidth);
+});
+
 </script>
 
 
 <template>
-  <div className="container min-w-full grid grid-cols-3 mt-10">
-    <div className="container col-span-2 flex flex-col items-center">
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10">
+    <div className="border-2 container lg:col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
       <div className="mt-2">
@@ -223,8 +238,8 @@ const worstTime = () => {
       </div>
     </div>
 
-    <div className="container ml-10">
-      <div className="fixed">
+    <div className="container pl-10">
+      <div className="lg:fixed">
         <p>Total Solves: {{ totalSolves }}</p>
         <p>Average of last 5: {{ getAverage(5) }}</p>
         <p>Average of last 12: {{ getAverage(12) }}</p>
