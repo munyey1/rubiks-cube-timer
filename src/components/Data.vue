@@ -13,7 +13,7 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  ArcElement
+  ArcElement,
 } from "chart.js";
 import { Line, Pie } from "vue-chartjs";
 
@@ -53,7 +53,9 @@ const dnfRate = computed(() => {
 });
 
 const plusTwoRate = computed(() => {
-  const plusTwo = props.times.filter((time) => time.time.includes("(+)")).length;
+  const plusTwo = props.times.filter((time) =>
+    time.time.includes("(+)")
+  ).length;
   return (plusTwo / props.times.length) * 100;
 });
 
@@ -76,7 +78,7 @@ const completeTimes = computed(() => {
 const labels = computed(() => {
   return props.times.slice(-lineFilter.value).map((time) => {
     const date = new Date(time.solved_at);
-    return (
+    let label =
       date.getHours() +
       ":" +
       date.getMinutes() +
@@ -85,15 +87,27 @@ const labels = computed(() => {
       "/" +
       date.getMonth() +
       "/" +
-      date.getFullYear()
-    );
+      date.getFullYear();
+
+    if(time.time === "DNF") {
+      label += " DNF";
+    } else if(time.time.includes("(+)")) {
+      label += " +2";
+    } else {
+      label += " " + time.time;
+    }
+
+    return label;
   });
 });
 
 const data = computed(() => {
   return props.times
     .slice(-lineFilter.value)
-    .map((time) => parseTime(time.time));
+    .map((time) => {
+      if(time.time === "DNF") return null;
+      return parseTime(time.time);
+    });
 });
 
 const lineData = computed(() => ({
@@ -121,7 +135,7 @@ const lineOptions = {
   },
   scales: {
     x: {
-      ticks:{
+      ticks: {
         color: "white",
       },
       display: true,
@@ -164,6 +178,7 @@ const pieData = computed(() => ({
 
 const pieOptions = {
   responsive: true,
+  maintainAspectRatio: true,
   plugins: {
     legend: {
       display: true,
@@ -212,13 +227,13 @@ onMounted(() => {
 onBeforeMount(() => {
   window.removeEventListener("resize", updateScreenWidth);
 });
-
 </script>
 
-
 <template>
-  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10">
-    <div className="border-2 container lg:col-span-2 flex flex-col items-center">
+  <div
+    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10"
+  >
+    <div className="container lg:col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
       <div className="mt-2">
@@ -233,8 +248,12 @@ onBeforeMount(() => {
         </select>
       </div>
       <Line :data="lineData" :options="lineOptions" className="mt-8" />
-      <div className="w-1/2 mt-10 ">
-        <Pie :data="pieData" :options="pieOptions" className="justify-self-center"/>
+      <div className="my-10 lg:w-1/2">
+        <Pie
+          :data="pieData"
+          :options="pieOptions"
+          className="justify-self-center"
+        />
       </div>
     </div>
 

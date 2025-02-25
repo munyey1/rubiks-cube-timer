@@ -209,7 +209,6 @@ onBeforeMount(() => {
     ></div>
     <div
       @click="updateTwistyPlayer"
-      v-show="screenWidth > 640"
       className="container flex-col items-center place-content-center lg:pl-20"
     >
       <twisty-player
