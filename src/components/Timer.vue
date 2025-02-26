@@ -172,10 +172,18 @@ const calAvg = (num) => {
   return calculateAverage(num, props.times);
 };
 
-const tst = () => {
-  console.log("test");
-  console.log(screenWidth.value);
-  console.log(scramble.value);
+const smTouch = () => {
+  if (isStopped.value && isInspection.value) {
+    inspection();
+  }
+  if (!isStopped.value && !isInspection.value) {
+    stop();
+  }
+  if (isStopped.value && !isInspection.value) {
+    elapsedTime.value = "0.00";
+    clearInterval(timer.value);
+    start();
+  }
 };
 
 const updateScreenWidth = () => {
@@ -218,7 +226,7 @@ onBeforeMount(() => {
         visualization="2D"
       ></twisty-player>
     </div>
-    <div @click="tst" className="container flex flex-col items-center">
+    <div @click="smTouch" className="container flex flex-col items-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
