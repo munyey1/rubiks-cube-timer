@@ -231,7 +231,7 @@ onBeforeMount(() => {
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
       </h2>
-      <h2 className="text-5xl mt-36 z-10" v-if="isRunning || isInspection">
+      <h2 className="text-5xl lg:mt-36 mt-20 z-10" v-if="isRunning || isInspection">
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
