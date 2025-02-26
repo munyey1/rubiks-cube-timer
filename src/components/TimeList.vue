@@ -12,6 +12,21 @@ const showModal = (time) => {
   selectedTime.value = time;
   solve_modal.value?.showModal();
 };
+
+const label = (time) => {
+  const date = new Date(time);
+  return (
+    date.getHours() +
+    ":" +
+    date.getMinutes() +
+    " " +
+    date.getDate() +
+    "/" +
+    date.getMonth() +
+    "/" +
+    date.getFullYear()
+  );
+};
 </script>
 
 <template>
@@ -34,7 +49,7 @@ const showModal = (time) => {
       <div v-if="selectedTime" class="modal-box">
         <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>
         <p class="py-4">Press ESC key or click outside to close</p>
-        <p>Solved at - {{ selectedTime.solved_at }}</p>
+        <p>Solved at - {{ label(selectedTime.solved_at) }}</p>
         <twisty-player
           background="none"
           controlPanel="none"
