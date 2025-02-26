@@ -88,39 +88,46 @@ const labels = computed(() => {
       date.getMonth() +
       "/" +
       date.getFullYear();
-
-    if(time.time === "DNF") {
-      label += " DNF";
-    } else if(time.time.includes("(+)")) {
-      label += " +2";
-    } else {
-      label += " " + time.time;
-    }
-
     return label;
   });
 });
 
-const data = computed(() => {
-  return props.times
-    .slice(-lineFilter.value)
-    .map((time) => {
-      if(time.time === "DNF") return null;
-      return parseTime(time.time);
-    });
+const lineData = computed(() => {
+  const times = props.times.slice(-lineFilter.value);
+
+  return {
+    labels: labels.value,
+    datasets: [
+      {
+        label: "Normal",
+        data: times.map((time) =>
+          time.time.includes("(+)") || time.time === "DNF" ? null : parseTime(time.time)
+        ),
+        backgroundColor: "#03e3fc",
+        borderColor: "#03e3fc",
+      },
+      {
+        label: "+2",
+        data: times.map((time) =>
+          time.time.includes("(+)") ? parseTime(time.time) : null
+        ),
+        backgroundColor: "#eb8f34",
+        borderColor: "#eb8f34",
+        pointStyle: "triangle",
+        pointRadius: 6,
+      },
+      {
+        label: "DNF",
+        data: times.map((time) => (time.time === "DNF" ? 0 : null)),
+        backgroundColor: "#ff0000",
+        borderColor: "#ff0000",
+        pointStyle: "cross",
+        pointRadius: 6,
+      },
+    ],
+  };
 });
 
-const lineData = computed(() => ({
-  labels: labels.value,
-  datasets: [
-    {
-      label: "Solves",
-      data: data.value,
-      backgroundColor: "#FFFFFF",
-      borderColor: "#03e3fc",
-    },
-  ],
-}));
 
 const lineOptions = {
   responsive: true,
@@ -166,19 +173,19 @@ const lineOptions = {
 };
 
 const pieData = computed(() => ({
-  labels: ["DNFs", "+2s", "Completed"],
+  labels: ["Normal","+2s", "DNFs"],
   datasets: [
     {
       label: "Count",
-      data: [dnfs.value, plusTwos.value, completeTimes.value],
-      backgroundColor: ["#ff0000", "#eb8f34", "#03e3fc"],
+      data: [completeTimes.value, plusTwos.value,  dnfs.value],
+      backgroundColor: ["#03e3fc", "#eb8f34", "#ff0000", ],
+      borderColor: ["#03e3fc", "#eb8f34", "#ff0000"],
     },
   ],
 }));
 
 const pieOptions = {
   responsive: true,
-  maintainAspectRatio: true,
   plugins: {
     legend: {
       display: true,
@@ -248,7 +255,7 @@ onBeforeMount(() => {
         </select>
       </div>
       <Line :data="lineData" :options="lineOptions" className="mt-8" />
-      <div className="my-10 lg:w-1/2">
+      <div className="w-full my-10 lg:w-1/2">
         <Pie
           :data="pieData"
           :options="pieOptions"
@@ -260,9 +267,11 @@ onBeforeMount(() => {
     <div className="container pl-10">
       <div className="lg:fixed">
         <p>Total Solves: {{ totalSolves }}</p>
+        <p>All Time Average: {{ getAverage(totalSolves) }}</p>
         <p>Average of last 5: {{ getAverage(5) }}</p>
         <p>Average of last 12: {{ getAverage(12) }}</p>
         <p>Average of last 50: {{ getAverage(50) }}</p>
+
         <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
         <h2 className="text-lg mt-10 ">Times:</h2>
