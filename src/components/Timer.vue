@@ -19,7 +19,7 @@ const scramble = ref("");
 const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
-const screenWidth = ref(window.innerWidth);
+const is3D = ref(true);
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -148,8 +148,10 @@ const getScramble = async () => {
 };
 
 const updateTwistyPlayer = () => {
-  const twistyPlayer = document.querySelector("twisty-player");
+  const twistyPlayer = document.querySelectorAll("twisty-player")[0];
   twistyPlayer.alg = scramble.value;
+  const twistyPlayer2 = document.querySelectorAll("twisty-player")[1];
+  twistyPlayer2.alg = scramble.value;
 };
 
 const onUpEvent = (event) => {
@@ -186,10 +188,6 @@ const smTouch = () => {
   }
 };
 
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth;
-};
-
 const changeScramble = () => {
   getScramble();
 };
@@ -197,12 +195,10 @@ const changeScramble = () => {
 onMounted(() => {
   getTimes();
   getScramble();
-  window.addEventListener("resize", updateScreenWidth);
   window.addEventListener("keyup", onUpEvent);
 });
 
 onBeforeMount(() => {
-  window.removeEventListener("resize", updateScreenWidth);
   window.removeEventListener("keyup", onUpEvent);
 });
 </script>
@@ -217,8 +213,15 @@ onBeforeMount(() => {
     ></div>
     <div
       @click="updateTwistyPlayer"
-      className="container flex-col items-center place-content-center lg:pl-20"
+      className="flex flex-col items-center justify-center"
     >
+      <input type="checkbox"  defaultChecked className="toggle" />
+      <twisty-player
+        ref="twistyPlayer"
+        background="none"
+        controlPanel="none"
+        visualization="3D"
+      ></twisty-player>
       <twisty-player
         ref="twistyPlayer"
         background="none"
@@ -231,7 +234,10 @@ onBeforeMount(() => {
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
       </h2>
-      <h2 className="text-5xl lg:mt-36 mt-20 z-10" v-if="isRunning || isInspection">
+      <h2
+        className="text-5xl lg:mt-36 mt-20 z-10"
+        v-if="isRunning || isInspection"
+      >
         Time:
       </h2>
       <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
