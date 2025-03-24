@@ -49,7 +49,8 @@ const getTimes = async () => {
 };
 
 const insertTimes = async () => {
-  if (isStopped.value) return;
+  if (!isStopped.value) return;
+  console.log("Inserting times", isStopped.value);
   const { error } = await supabase.from("solves").insert([
     {
       user_id: props.session.user.id,
@@ -86,8 +87,6 @@ const start = () => {
 };
 
 const stop = () => {
-  if (isStopped.value) return;
-
   isStopped.value = true;
   isRunning.value = false;
   isInspection.value = true;
@@ -213,7 +212,7 @@ onBeforeMount(() => {
   >
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
-      class="dark-overlay"
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
     <div
       @click="updateTwistyPlayer"
@@ -274,13 +273,4 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-.dark-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
 </style>
