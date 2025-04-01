@@ -238,7 +238,7 @@ onBeforeMount(() => {
 
 <template>
   <div
-    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10"
+    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1"
   >
     <div className="container lg:col-span-2 flex flex-col items-center">
       <p>Best Time: {{ bestTime() }} seconds</p>
@@ -255,7 +255,7 @@ onBeforeMount(() => {
         </select>
       </div>
       <Line :data="lineData" :options="lineOptions" className="mt-8" />
-      <div className="w-full my-10 lg:w-1/2">
+      <div className="w-full mt-10 lg:w-1/2">
         <Pie
           :data="pieData"
           :options="pieOptions"
@@ -264,17 +264,17 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div className="container pl-10">
-      <div className="lg:fixed">
+    <div className="container">
+      <div className="lg:fixed h-screen p-6">
         <p>Total Solves: {{ totalSolves }}</p>
         <p>All Time Average: {{ getAverage(totalSolves) }}</p>
         <p>Average of last 5: {{ getAverage(5) }}</p>
         <p>Average of last 12: {{ getAverage(12) }}</p>
         <p>Average of last 50: {{ getAverage(50) }}</p>
 
-        <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
+        <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
-        <h2 className="text-lg mt-10 ">Times:</h2>
+        <h2 className="text-lg mt-6">Times:</h2>
         <TimeList :times="times" />
       </div>
     </div>

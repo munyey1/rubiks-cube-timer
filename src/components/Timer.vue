@@ -207,9 +207,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div
-    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 lg:mt-10"
-  >
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 ">
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
@@ -219,7 +217,12 @@ onBeforeMount(() => {
       className="flex flex-col items-center justify-start"
     >
       <p className="text-xl">{{ is3D ? "3D" : "2D" }}</p>
-      <input type="checkbox" @click="toggle3D" defaultChecked className="toggle lg:mb-20" />
+      <input
+        type="checkbox"
+        @click="toggle3D"
+        defaultChecked
+        className="toggle lg:mb-20"
+      />
       <twisty-player
         v-show="is3D"
         ref="twistyPlayer"
@@ -235,7 +238,10 @@ onBeforeMount(() => {
         visualization="2D"
       ></twisty-player>
     </div>
-    <div @click="smTouch" className="container flex flex-col items-center justify-start">
+    <div
+      @click="smTouch"
+      className="container flex flex-col items-center justify-start"
+    >
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
@@ -263,14 +269,15 @@ onBeforeMount(() => {
         </button>
       </div>
     </div>
-    <div className="container pl-10">
-      <p>Average of last 5: {{ calAvg(5) }}</p>
-      <p>Average of last 12: {{ calAvg(12) }}</p>
-      <p className="text-lg mt-10 ">Times:</p>
-      <TimeList :times="times" />
+    <div className="flex container">
+      <div className="flex-grow p-6 h-screen">
+        <p>Average of last 5: {{ calAvg(5) }}</p>
+        <p>Average of last 12: {{ calAvg(12) }}</p>
+        <p className="text-lg mt-10 ">Times:</p>
+        <TimeList :times="times" />
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

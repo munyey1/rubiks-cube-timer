@@ -31,7 +31,7 @@ const label = (time) => {
 
 <template>
   <div>
-    <div className="mr-20 overflow-y-scroll h-96">
+    <div className="h-screen overflow-auto">
       <ol className="list-decimal list-inside">
         <ul
           className="pb-4"
