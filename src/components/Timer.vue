@@ -214,14 +214,14 @@ onBeforeMount(() => {
     ></div>
     <div
       @click="updateTwistyPlayer"
-      className="flex flex-col items-center justify-start"
+      className="flex flex-col items-center justify-center"
     >
       <p className="text-xl">{{ is3D ? "3D" : "2D" }}</p>
       <input
         type="checkbox"
         @click="toggle3D"
         defaultChecked
-        className="toggle lg:mb-20"
+        className="toggle lg:mb-10"
       />
       <twisty-player
         v-show="is3D"
@@ -238,10 +238,7 @@ onBeforeMount(() => {
         visualization="2D"
       ></twisty-player>
     </div>
-    <div
-      @click="smTouch"
-      className="container flex flex-col items-center justify-start"
-    >
+    <div className="container flex flex-col items-center justify-start">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
@@ -252,7 +249,7 @@ onBeforeMount(() => {
       >
         Time:
       </h2>
-      <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
+      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">{{ elapsedTime }} seconds</h2>
       <button
         className="btn mt-4"
         @click="changeScramble"
@@ -269,12 +266,12 @@ onBeforeMount(() => {
         </button>
       </div>
     </div>
-    <div className="flex container">
-      <div className="flex-grow p-6 h-screen">
+    <div className="flex items-center">
+      <div className="p-6">
         <p>Average of last 5: {{ calAvg(5) }}</p>
         <p>Average of last 12: {{ calAvg(12) }}</p>
         <p className="text-lg mt-10 ">Times:</p>
-        <TimeList :times="times" />
+        <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
     </div>
   </div>

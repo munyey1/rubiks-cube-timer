@@ -264,8 +264,8 @@ onBeforeMount(() => {
       </div>
     </div>
 
-    <div className="container">
-      <div className="lg:fixed h-screen p-6">
+    <div className="flex">
+      <div className="lg:fixed p-6">
         <p>Total Solves: {{ totalSolves }}</p>
         <p>All Time Average: {{ getAverage(totalSolves) }}</p>
         <p>Average of last 5: {{ getAverage(5) }}</p>
@@ -275,7 +275,7 @@ onBeforeMount(() => {
         <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
         <h2 className="text-lg mt-6">Times:</h2>
-        <TimeList :times="times" />
+        <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
     </div>
   </div>
