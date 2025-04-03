@@ -24,7 +24,7 @@ onMounted(() => {
 <template>
   <div
     v-if="session"
-    className="font-mono container min-w-full max-h-full flex flex-col items-center"
+    className="font-mono min-h-screen flex flex-col items-center"
   >
     <div
       role="tablist"
