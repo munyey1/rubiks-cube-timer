@@ -1,10 +1,9 @@
-<style scoped></style>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
+import Login from "./components/Login.vue";
 import Timer from "./components/Timer.vue";
 import DataComponent from "./components/Data.vue";
 
@@ -15,10 +14,21 @@ onMounted(() => {
   supabase.auth.getSession().then(({ data }) => {
     session.value = data.session;
   });
-  supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session;
+
+  if (window.location.hash.includes("access_token")) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  supabase.auth.onAuthStateChange((_, session) => {
+    session.value = session;
   });
 });
+
+const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) console.error("Error logging out:", error.message);
+  session.value = null;
+};
 </script>
 
 <template>
@@ -39,7 +49,7 @@ onMounted(() => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content lg:p-10">
-        <Timer :session="session" :times="times"/>
+        <Timer :session="session" :times="times" />
       </div>
 
       <input
@@ -54,12 +64,14 @@ onMounted(() => {
       </div>
     </div>
     <div>
-      <button className="btn btn-outline mt-8 mb-2" @click="supabase.auth.signOut()">
+      <button className="btn btn-outline mt-8 mb-2" @click="logout">
         Sign out
       </button>
     </div>
   </div>
   <div v-else className="font-mono container flex flex-col items-center mt-80">
-    <Auth />
+    <Login />
   </div>
 </template>
+
+<style scoped></style>
