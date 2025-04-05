@@ -15,10 +15,6 @@ onMounted(() => {
     session.value = data.session;
   });
 
-  if (window.location.hash.includes("access_token")) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-
   supabase.auth.onAuthStateChange((_, session) => {
     session.value = session;
   });
@@ -70,7 +66,7 @@ const logout = async () => {
     </div>
   </div>
   <div v-else className="font-mono container flex flex-col items-center mt-80">
-    <Login />
+    <Auth />
   </div>
 </template>
 
