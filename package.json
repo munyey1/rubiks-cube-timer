@@ -12,7 +12,8 @@
     "@supabase/supabase-js": "^2.45.3",
     "chart.js": "^4.4.4",
     "vue": "^3.4.37",
-    "vue-chartjs": "^5.3.1"
+    "vue-chartjs": "^5.3.1",
+    "vue3-google-login": "^2.0.33"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.2",
