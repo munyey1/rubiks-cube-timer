@@ -241,6 +241,7 @@ onBeforeMount(() => {
     className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1"
   >
     <div className="container lg:col-span-2 flex flex-col items-center">
+      <p>Total Solves: {{ totalSolves }}</p>
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
       <div className="mt-2">
@@ -269,7 +270,6 @@ onBeforeMount(() => {
         <p>Average of last 5: {{ getAverage(5) }}</p>
         <p>Average of last 12: {{ getAverage(12) }}</p>
         <p>Average of last 50: {{ getAverage(50) }}</p>
-        <p>Total Solves: {{ totalSolves }}</p>
         <p>All Time Average: {{ getAverage(totalSolves) }}</p>
         <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>

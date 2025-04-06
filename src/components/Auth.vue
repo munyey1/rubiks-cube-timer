@@ -6,7 +6,6 @@ const loading = ref(false)
 const email = ref('')
 
 const handleLogin = async () => {
-  // Add GoogleOAuth2 login here
   try {
     loading.value = true
     const { error } = await supabase.auth.signInWithOtp({

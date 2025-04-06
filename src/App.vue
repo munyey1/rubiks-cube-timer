@@ -3,7 +3,6 @@ import { ref, onMounted } from "vue";
 import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
-import Login from "./components/Login.vue";
 import Timer from "./components/Timer.vue";
 import DataComponent from "./components/Data.vue";
 
@@ -15,15 +14,21 @@ onMounted(() => {
     session.value = data.session;
   });
 
-  supabase.auth.onAuthStateChange((_, session) => {
-    session.value = session;
+  supabase.auth.onAuthStateChange((_, newSession) => {
+    session.value = newSession;
   });
 });
 
 const logout = async () => {
+  if (!session.value) {
+    console.warn("No session to log out from.");
+    return;
+  }
+
   const { error } = await supabase.auth.signOut();
-  if (error) console.error("Error logging out:", error.message);
-  session.value = null;
+  if (error) {
+    console.error("Error logging out:", error.message);
+  }
 };
 </script>
 
@@ -60,7 +65,7 @@ const logout = async () => {
       </div>
     </div>
     <div>
-      <button className="btn btn-outline mt-8 mb-2" @click="logout">
+      <button className="btn btn-outline mt-8 mb-2" @click="supabase.auth.signOut()">
         Sign out
       </button>
     </div>
