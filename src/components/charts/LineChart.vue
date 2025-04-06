@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 
-import { parseTime } from "../../composables/parseTime";
+import { parseTime } from "../../composables/index";
 
 import annotationPlugin from "chartjs-plugin-annotation";
 
@@ -108,6 +108,7 @@ const lineOptions = {
           yMax: 10,
           borderColor: "white",
           borderWidth: 2,
+          borderDash: [6, 6],
         },
       },
     },
