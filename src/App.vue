@@ -1,10 +1,9 @@
-<style scoped></style>
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
+import Login from "./components/Login.vue";
 import Timer from "./components/Timer.vue";
 import DataComponent from "./components/Data.vue";
 
@@ -15,16 +14,29 @@ onMounted(() => {
   supabase.auth.getSession().then(({ data }) => {
     session.value = data.session;
   });
-  supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session;
+
+  supabase.auth.onAuthStateChange((_, newSession) => {
+    session.value = newSession;
   });
 });
+
+const logout = async () => {
+  if (!session.value) {
+    console.warn("No session to log out from.");
+    return;
+  }
+
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Error logging out:", error.message);
+  }
+};
 </script>
 
 <template>
   <div
     v-if="session"
-    className="font-mono container min-w-full max-h-full flex flex-col items-center"
+    className="font-mono min-h-screen flex flex-col items-center"
   >
     <div
       role="tablist"
@@ -39,7 +51,7 @@ onMounted(() => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content lg:p-10">
-        <Timer :session="session" :times="times"/>
+        <Timer :session="session" :times="times" />
       </div>
 
       <input
@@ -54,12 +66,16 @@ onMounted(() => {
       </div>
     </div>
     <div>
-      <button className="btn btn-outline mt-8" @click="supabase.auth.signOut()">
+      <button className="btn btn-outline mt-8 mb-2" @click="supabase.auth.signOut()">
         Sign out
       </button>
     </div>
   </div>
   <div v-else className="font-mono container flex flex-col items-center mt-80">
     <Auth />
+    <div className="divider">OR</div>
+    <Login />
   </div>
 </template>
+
+<style scoped></style>

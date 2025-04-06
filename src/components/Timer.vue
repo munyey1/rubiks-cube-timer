@@ -49,7 +49,8 @@ const getTimes = async () => {
 };
 
 const insertTimes = async () => {
-  if (isStopped.value) return;
+  if (!isStopped.value) return;
+  console.log("Inserting times", isStopped.value);
   const { error } = await supabase.from("solves").insert([
     {
       user_id: props.session.user.id,
@@ -86,8 +87,6 @@ const start = () => {
 };
 
 const stop = () => {
-  if (isStopped.value) return;
-
   isStopped.value = true;
   isRunning.value = false;
   isInspection.value = true;
@@ -208,19 +207,22 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div
-    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 lg:mt-10"
-  >
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1">
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
-      class="dark-overlay"
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
     <div
       @click="updateTwistyPlayer"
-      className="flex flex-col items-center justify-start"
+      className="flex flex-col items-center justify-center"
     >
       <p className="text-xl">{{ is3D ? "3D" : "2D" }}</p>
-      <input type="checkbox" @click="toggle3D" defaultChecked className="toggle lg:mb-20" />
+      <input
+        type="checkbox"
+        @click="toggle3D"
+        defaultChecked
+        className="toggle lg:mb-10"
+      />
       <twisty-player
         v-show="is3D"
         ref="twistyPlayer"
@@ -236,7 +238,7 @@ onBeforeMount(() => {
         visualization="2D"
       ></twisty-player>
     </div>
-    <div @click="smTouch" className="container flex flex-col items-center justify-start">
+    <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
@@ -247,7 +249,7 @@ onBeforeMount(() => {
       >
         Time:
       </h2>
-      <h2 className="text-5xl mb-28 z-10">{{ elapsedTime }} seconds</h2>
+      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">{{ elapsedTime }} seconds</h2>
       <button
         className="btn mt-4"
         @click="changeScramble"
@@ -255,7 +257,7 @@ onBeforeMount(() => {
       >
         Change Scramble
       </button>
-      <div className="my-12">
+      <div className="mt-12">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
@@ -264,23 +266,15 @@ onBeforeMount(() => {
         </button>
       </div>
     </div>
-    <div className="container pl-10">
-      <p>Average of last 5: {{ calAvg(5) }}</p>
-      <p>Average of last 12: {{ calAvg(12) }}</p>
-      <p className="text-lg mt-10 ">Times:</p>
-      <TimeList :times="times" />
+    <div className="flex items-center">
+      <div className="p-6">
+        <p>Average of last 5: {{ calAvg(5) }}</p>
+        <p>Average of last 12: {{ calAvg(12) }}</p>
+        <p className="text-lg mt-10 ">Times:</p>
+        <TimeList className="overflow-y-auto h-96" :times="times" />
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.dark-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-</style>
+<style scoped></style>

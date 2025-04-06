@@ -31,20 +31,18 @@ const label = (time) => {
 
 <template>
   <div>
-    <div className="mr-20 overflow-y-scroll h-96">
-      <ol className="list-decimal list-inside">
-        <ul
-          className="pb-4"
-          v-for="(time, index) in times.slice().reverse()"
-          :key="index"
-        >
-          <p>{{ times.length - index }}.</p>
-          <p>{{ time.time }} seconds</p>
-          <p>Scramble - {{ time.scramble }}</p>
-          <button class="btn" @click="showModal(time)">More Details</button>
-        </ul>
-      </ol>
-    </div>
+    <ol className="list-decimal list-inside">
+      <ul
+        className="pb-4"
+        v-for="(time, index) in times.slice().reverse()"
+        :key="index"
+      >
+        <p>{{ times.length - index }}.</p>
+        <p>{{ time.time }} seconds</p>
+        <p>Scramble - {{ time.scramble }}</p>
+        <button class="btn" @click="showModal(time)">More Details</button>
+      </ul>
+    </ol>
     <dialog ref="solve_modal" class="modal">
       <div v-if="selectedTime" class="modal-box">
         <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>

@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted, onBeforeMount, computed } from "vue";
+
 import { calculateAverage } from "../composables/calcAvg";
 import TimeList from "./TimeList.vue";
+
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 import {
   Chart as ChartJS,
@@ -15,7 +18,7 @@ import {
   LineElement,
   ArcElement,
 } from "chart.js";
-import { Line, Pie } from "vue-chartjs";
+import { Line, Doughnut } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -26,7 +29,8 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin,
 );
 
 const props = defineProps({
@@ -139,6 +143,17 @@ const lineOptions = {
         color: "white",
       },
     },
+    annotation: {
+      annotations: {
+        line1: {
+          type: "line",
+          yMin: 10,
+          yMax: 10,
+          borderColor: "white",
+          borderWidth: 2,
+        },
+      },
+    },
   },
   scales: {
     x: {
@@ -238,9 +253,10 @@ onBeforeMount(() => {
 
 <template>
   <div
-    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 mt-10"
+    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1"
   >
     <div className="container lg:col-span-2 flex flex-col items-center">
+      <p>Total Solves: {{ totalSolves }}</p>
       <p>Best Time: {{ bestTime() }} seconds</p>
       <p>Worst Time: {{ worstTime() }} seconds</p>
       <div className="mt-2">
@@ -255,27 +271,25 @@ onBeforeMount(() => {
         </select>
       </div>
       <Line :data="lineData" :options="lineOptions" className="mt-8" />
-      <div className="w-full my-10 lg:w-1/2">
-        <Pie
+      <div className="w-full mt-10 lg:w-1/2">
+        <Doughnut
           :data="pieData"
           :options="pieOptions"
-          className="justify-self-center"
+          className="justify-self-center mt-4"
         />
       </div>
     </div>
 
-    <div className="container pl-10">
-      <div className="lg:fixed">
-        <p>Total Solves: {{ totalSolves }}</p>
-        <p>All Time Average: {{ getAverage(totalSolves) }}</p>
+    <div className="flex">
+      <div className="lg:fixed p-6">
         <p>Average of last 5: {{ getAverage(5) }}</p>
         <p>Average of last 12: {{ getAverage(12) }}</p>
         <p>Average of last 50: {{ getAverage(50) }}</p>
-
-        <p className="mt-10">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
+        <p>All Time Average: {{ getAverage(totalSolves) }}</p>
+        <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
-        <h2 className="text-lg mt-10 ">Times:</h2>
-        <TimeList :times="times" />
+        <h2 className="text-lg mt-6">Times:</h2>
+        <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
     </div>
   </div>
