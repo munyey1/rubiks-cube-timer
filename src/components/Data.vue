@@ -2,7 +2,9 @@
 import { ref, onMounted, onBeforeMount, computed } from "vue";
 
 import { calculateAverage } from "../composables/calcAvg";
+
 import TimeList from "./TimeList.vue";
+import LineChart from "./charts/LineChart.vue";
 
 import annotationPlugin from 'chartjs-plugin-annotation';
 
@@ -18,7 +20,7 @@ import {
   LineElement,
   ArcElement,
 } from "chart.js";
-import { Line, Doughnut } from "vue-chartjs";
+import { Doughnut } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -78,114 +80,6 @@ const totalSolves = computed(() => {
 const completeTimes = computed(() => {
   return props.times.length - dnfs.value - plusTwos.value;
 });
-
-const labels = computed(() => {
-  return props.times.slice(-lineFilter.value).map((time) => {
-    const date = new Date(time.solved_at);
-    let label =
-      date.getHours() +
-      ":" +
-      date.getMinutes() +
-      " " +
-      date.getDate() +
-      "/" +
-      date.getMonth() +
-      "/" +
-      date.getFullYear();
-    return label;
-  });
-});
-
-const lineData = computed(() => {
-  const times = props.times.slice(-lineFilter.value);
-
-  return {
-    labels: labels.value,
-    datasets: [
-      {
-        label: "Normal",
-        data: times.map((time) =>
-          time.time.includes("(+)") || time.time === "DNF" ? null : parseTime(time.time)
-        ),
-        backgroundColor: "#03e3fc",
-        borderColor: "#03e3fc",
-      },
-      {
-        label: "+2",
-        data: times.map((time) =>
-          time.time.includes("(+)") ? parseTime(time.time) : null
-        ),
-        backgroundColor: "#eb8f34",
-        borderColor: "#eb8f34",
-        pointStyle: "triangle",
-        pointRadius: 6,
-      },
-      {
-        label: "DNF",
-        data: times.map((time) => (time.time === "DNF" ? 0 : null)),
-        backgroundColor: "#ff0000",
-        borderColor: "#ff0000",
-        pointStyle: "cross",
-        pointRadius: 6,
-      },
-    ],
-  };
-});
-
-
-const lineOptions = {
-  responsive: true,
-  maintainAspectRatio: true,
-  plugins: {
-    legend: {
-      display: true,
-      labels: {
-        color: "white",
-      },
-    },
-    annotation: {
-      annotations: {
-        line1: {
-          type: "line",
-          yMin: 10,
-          yMax: 10,
-          borderColor: "white",
-          borderWidth: 2,
-        },
-      },
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        color: "white",
-      },
-      display: true,
-      title: {
-        display: true,
-        text: "Date",
-        color: "white",
-        font: {
-          size: 20,
-        },
-      },
-    },
-    y: {
-      ticks: {
-        color: "white",
-      },
-      display: true,
-      title: {
-        display: true,
-        text: "Time",
-        color: "white",
-        font: {
-          size: 20,
-        },
-      },
-    },
-  },
-};
 
 const pieData = computed(() => ({
   labels: ["Normal","+2s", "DNFs"],
@@ -270,7 +164,11 @@ onBeforeMount(() => {
           <option value="100">Last 100</option>
         </select>
       </div>
-      <Line :data="lineData" :options="lineOptions" className="mt-8" />
+      <LineChart
+        :times="props.times"
+        :lineFilter="Number(lineFilter)"
+        className="mt-8"
+      />
       <div className="w-full mt-10 lg:w-1/2">
         <Doughnut
           :data="pieData"
@@ -294,5 +192,3 @@ onBeforeMount(() => {
     </div>
   </div>
 </template>
-
-<style scoped></style>
