@@ -207,7 +207,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1 ">
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1">
     <div
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
@@ -238,7 +238,7 @@ onBeforeMount(() => {
         visualization="2D"
       ></twisty-player>
     </div>
-    <div className="container flex flex-col items-center justify-start">
+    <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
@@ -257,7 +257,7 @@ onBeforeMount(() => {
       >
         Change Scramble
       </button>
-      <div className="my-12">
+      <div className="mt-12">
         <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
