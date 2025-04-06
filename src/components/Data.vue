@@ -15,7 +15,7 @@ import {
   LineElement,
   ArcElement,
 } from "chart.js";
-import { Line, Pie } from "vue-chartjs";
+import { Line, Doughnut } from "vue-chartjs";
 
 ChartJS.register(
   CategoryScale,
@@ -257,10 +257,10 @@ onBeforeMount(() => {
       </div>
       <Line :data="lineData" :options="lineOptions" className="mt-8" />
       <div className="w-full mt-10 lg:w-1/2">
-        <Pie
+        <Doughnut
           :data="pieData"
           :options="pieOptions"
-          className="justify-self-center"
+          className="justify-self-center mt-4"
         />
       </div>
     </div>
