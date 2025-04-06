@@ -1,7 +1,10 @@
 <script setup>
 import { ref, onMounted, onBeforeMount, computed } from "vue";
+
 import { calculateAverage } from "../composables/calcAvg";
 import TimeList from "./TimeList.vue";
+
+import annotationPlugin from 'chartjs-plugin-annotation';
 
 import {
   Chart as ChartJS,
@@ -26,7 +29,8 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  annotationPlugin,
 );
 
 const props = defineProps({
@@ -137,6 +141,17 @@ const lineOptions = {
       display: true,
       labels: {
         color: "white",
+      },
+    },
+    annotation: {
+      annotations: {
+        line1: {
+          type: "line",
+          yMin: 10,
+          yMax: 10,
+          borderColor: "white",
+          borderWidth: 2,
+        },
       },
     },
   },
