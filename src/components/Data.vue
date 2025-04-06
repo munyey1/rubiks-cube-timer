@@ -1,39 +1,11 @@
 <script setup>
-import { ref, onMounted, onBeforeMount, computed } from "vue";
+import { ref, computed } from "vue";
 
-import { calculateAverage } from "../composables/calcAvg";
+import { calculateAverage, parseTime } from "../composables/index";
 
 import TimeList from "./TimeList.vue";
 import LineChart from "./charts/LineChart.vue";
-
-import annotationPlugin from 'chartjs-plugin-annotation';
-
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  ArcElement,
-} from "chart.js";
-import { Doughnut } from "vue-chartjs";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-  annotationPlugin,
-);
+import DoughnutChart from "./charts/DoughnutChart.vue";
 
 const props = defineProps({
   session: Object,
@@ -41,17 +13,6 @@ const props = defineProps({
 });
 
 const lineFilter = ref(0);
-const screenWidth = ref(window.innerWidth);
-
-const parseTime = (time) => {
-  if (time.includes("(+)")) {
-    return time.replace("(+)", "");
-  }
-  if (time === "DNF") {
-    return 0;
-  }
-  return time;
-};
 
 const dnfRate = computed(() => {
   const dnf = props.times.filter((time) => time.time === "DNF").length;
@@ -65,59 +26,11 @@ const plusTwoRate = computed(() => {
   return (plusTwo / props.times.length) * 100;
 });
 
-const dnfs = computed(() => {
-  return props.times.filter((time) => time.time === "DNF").length;
-});
-
-const plusTwos = computed(() => {
-  return props.times.filter((time) => time.time.includes("(+)")).length;
-});
-
 const totalSolves = computed(() => {
   return props.times.length;
 });
 
-const completeTimes = computed(() => {
-  return props.times.length - dnfs.value - plusTwos.value;
-});
-
-const pieData = computed(() => ({
-  labels: ["Normal","+2s", "DNFs"],
-  datasets: [
-    {
-      label: "Count",
-      data: [completeTimes.value, plusTwos.value,  dnfs.value],
-      backgroundColor: ["#03e3fc", "#eb8f34", "#ff0000", ],
-      borderColor: ["#03e3fc", "#eb8f34", "#ff0000"],
-    },
-  ],
-}));
-
-const pieOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: true,
-      labels: {
-        color: "white",
-      },
-    },
-    title: {
-      display: true,
-      text: "Solve Type Count",
-      color: "white",
-      font: {
-        size: 20,
-      },
-    },
-  },
-};
-
 // Methods
-const getAverage = (num) => {
-  return calculateAverage(num, props.times);
-};
-
 const bestTime = () => {
   const parsedTimes = props.times
     .map((time) => parseTime(time.time))
@@ -131,24 +44,10 @@ const worstTime = () => {
   const worst = Math.max(...parsedTimes);
   return worst === -Infinity ? null : worst;
 };
-
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth;
-};
-
-onMounted(() => {
-  window.addEventListener("resize", updateScreenWidth);
-});
-
-onBeforeMount(() => {
-  window.removeEventListener("resize", updateScreenWidth);
-});
 </script>
 
 <template>
-  <div
-    className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1"
-  >
+  <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1">
     <div className="container lg:col-span-2 flex flex-col items-center">
       <p>Total Solves: {{ totalSolves }}</p>
       <p>Best Time: {{ bestTime() }} seconds</p>
@@ -170,9 +69,8 @@ onBeforeMount(() => {
         className="mt-8"
       />
       <div className="w-full mt-10 lg:w-1/2">
-        <Doughnut
-          :data="pieData"
-          :options="pieOptions"
+        <DoughnutChart
+          :times="props.times"
           className="justify-self-center mt-4"
         />
       </div>
@@ -180,10 +78,10 @@ onBeforeMount(() => {
 
     <div className="flex">
       <div className="lg:fixed p-6">
-        <p>Average of last 5: {{ getAverage(5) }}</p>
-        <p>Average of last 12: {{ getAverage(12) }}</p>
-        <p>Average of last 50: {{ getAverage(50) }}</p>
-        <p>All Time Average: {{ getAverage(totalSolves) }}</p>
+        <p>Average of last 5: {{ calculateAverage(5, props.times) }}</p>
+        <p>Average of last 12: {{ calculateAverage(12, props.times) }}</p>
+        <p>Average of last 50: {{ calculateAverage(50, props.times) }}</p>
+        <p>All Time Average: {{ calculateAverage(totalSolves, props.times) }}</p>
         <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
         <h2 className="text-lg mt-6">Times:</h2>
