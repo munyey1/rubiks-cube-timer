@@ -49,10 +49,8 @@ const worstTime = () => {
 <template>
   <div className="container min-w-full grid lg:grid-cols-3 sm:grid-cols-1">
     <div className="container lg:col-span-2 flex flex-col items-center">
-      <p>Total Solves: {{ totalSolves }}</p>
-      <p>Best Time: {{ bestTime() }} seconds</p>
-      <p>Worst Time: {{ worstTime() }} seconds</p>
-      <div className="mt-2">
+      <p>Select Filter</p>
+      <div>
         <select v-model="lineFilter">
           <option value="" selected disabled>Please select</option>
           <option value="0">All</option>
@@ -66,7 +64,7 @@ const worstTime = () => {
       <LineChart
         :times="props.times"
         :lineFilter="Number(lineFilter)"
-        className="mt-8"
+        className="mt-2"
       />
       <div className="w-full mt-10 lg:w-1/2">
         <DoughnutChart
@@ -78,10 +76,15 @@ const worstTime = () => {
 
     <div className="flex">
       <div className="lg:fixed p-6">
+        <p>Total Solves: {{ totalSolves }}</p>
+        <p>Best Time: {{ bestTime() }} seconds</p>
+        <p className="mb-4">Worst Time: {{ worstTime() }} seconds</p>
+        <p>
+          All Time Average: {{ calculateAverage(totalSolves, props.times) }}
+        </p>
         <p>Average of last 5: {{ calculateAverage(5, props.times) }}</p>
         <p>Average of last 12: {{ calculateAverage(12, props.times) }}</p>
         <p>Average of last 50: {{ calculateAverage(50, props.times) }}</p>
-        <p>All Time Average: {{ calculateAverage(totalSolves, props.times) }}</p>
         <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
         <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
         <h2 className="text-lg mt-6">Times:</h2>
