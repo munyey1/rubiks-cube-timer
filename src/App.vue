@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
+import Login from "./components/Login.vue";
 import Timer from "./components/Timer.vue";
 import DataComponent from "./components/Data.vue";
 
@@ -72,6 +73,8 @@ const logout = async () => {
   </div>
   <div v-else className="font-mono container flex flex-col items-center mt-80">
     <Auth />
+    <div className="divider">OR</div>
+    <Login />
   </div>
 </template>
 
