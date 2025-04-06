@@ -4,7 +4,7 @@ import { ref } from "vue";
 import TimeList from "./TimeList.vue";
 import LineChart from "./charts/LineChart.vue";
 import DoughnutChart from "./charts/DoughnutChart.vue";
-import SummaryStats from "./stats/SummaryStats.vue";
+import SummaryStats from "./SummaryStats.vue";
 
 const props = defineProps({
   session: Object,

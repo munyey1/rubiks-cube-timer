@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 
-import { calculateAverage, parseTime } from "../../composables/index";
+import { calculateAverage, parseTime } from "../composables/index";
 
 const props = defineProps({
   times: Array,
