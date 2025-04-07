@@ -40,13 +40,15 @@ const worstTime = () => {
 </script>
 
 <template>
-  <p>Total Solves: {{ totalSolves }}</p>
-  <p>Best Time: {{ bestTime() }} seconds</p>
-  <p className="mb-4">Worst Time: {{ worstTime() }} seconds</p>
-  <p>All Time Average: {{ calculateAverage(totalSolves, props.times) }}</p>
-  <p>Average of last 5: {{ calculateAverage(5, props.times) }}</p>
-  <p>Average of last 12: {{ calculateAverage(12, props.times) }}</p>
-  <p>Average of last 50: {{ calculateAverage(50, props.times) }}</p>
-  <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
-  <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
+  <div>
+    <p>Total Solves: {{ totalSolves }}</p>
+    <p>Best Time: {{ bestTime() }} seconds</p>
+    <p className="mb-4">Worst Time: {{ worstTime() }} seconds</p>
+    <p>All Time Average: {{ calculateAverage(totalSolves, props.times) }}</p>
+    <p>Average of last 5: {{ calculateAverage(5, props.times) }}</p>
+    <p>Average of last 12: {{ calculateAverage(12, props.times) }}</p>
+    <p>Average of last 50: {{ calculateAverage(50, props.times) }}</p>
+    <p className="mt-4">DNF Rate {{ dnfRate.toFixed(2) }}%</p>
+    <p>+2 Rate {{ plusTwoRate.toFixed(2) }}%</p>
+  </div>
 </template>
