@@ -4,7 +4,7 @@ import { ref, onMounted, onBeforeMount } from "vue";
 import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scramble";
 import { supabase } from "../supabase";
 
-import { calculateAverage } from "../composables/calcAvg";
+import { calculateAverage } from "../composables/index";
 import TimeList from "./TimeList.vue";
 
 const props = defineProps({
