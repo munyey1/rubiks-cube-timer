@@ -104,7 +104,10 @@ const stop = () => {
   });
 
   clearInterval(timer.value);
-  insertTimes().then(() => getScramble());
+  insertTimes().then(() => {
+    getScramble()
+    refreshScramble();
+});
 };
 
 const plus2 = async () => {
@@ -151,6 +154,7 @@ const getScramble = async () => {
 };
 
 const updateTwistyPlayer = () => {
+  console.log(scramble.value)
   const twistyPlayer = document.querySelectorAll("twisty-player")[0];
   twistyPlayer.alg = scramble.value;
   const twistyPlayer2 = document.querySelectorAll("twisty-player")[1];
@@ -223,35 +227,9 @@ onBeforeMount(() => {
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
-    <div
-      @click="updateTwistyPlayer"
-      className="flex flex-col items-center justify-center"
-    >
-      <p className="text-xl">{{ is3D ? "3D" : "2D" }}</p>
-      <input
-        type="checkbox"
-        @click="toggle3D"
-        defaultChecked
-        className="toggle lg:mb-10"
-      />
-      <twisty-player
-        v-show="is3D"
-        ref="twistyPlayer"
-        background="none"
-        controlPanel="none"
-        visualization="3D"
-      ></twisty-player>
-      <twisty-player
-        v-show="!is3D"
-        ref="twistyPlayer"
-        background="none"
-        controlPanel="none"
-        visualization="2D"
-      ></twisty-player>
-      <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayerr" />
-    </div>
+    <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayerr" />
     <div className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
+      <h1 className="text-2xl mb-6">{{ scramblee }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
       </h2>

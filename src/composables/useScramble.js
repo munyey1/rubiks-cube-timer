@@ -10,6 +10,7 @@ export function useScramble() {
   };
 
   const updateTwistyPlayerr = () => {
+    console.log(scramblee.value)
     const twistyPlayers = document.querySelectorAll("twisty-player");
     twistyPlayers.forEach((player) => {
       player.alg = scramblee.value;
