@@ -47,6 +47,7 @@ const label = (time) => {
       <div v-if="selectedTime" class="modal-box">
         <h3 class="text-lg font-bold">{{ selectedTime.time }} seconds</h3>
         <p class="py-4">Press ESC key or click outside to close</p>
+        <p>Scramble - {{ selectedTime.scramble }}</p>
         <p>Solved at - {{ label(selectedTime.solved_at) }}</p>
         <twisty-player
           background="none"
