@@ -5,7 +5,9 @@ import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scra
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/index";
+import { useScramble } from "../composables/useScramble";
 import TimeList from "./TimeList.vue";
+import ScrambleDisplay from "./ScrambleDisplay.vue";
 
 const props = defineProps({
   session: Object,
@@ -20,6 +22,8 @@ const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
 const is3D = ref(true);
+
+const { scramblee, getScramblee, updateTwistyPlayerr } = useScramble()
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -237,6 +241,7 @@ onBeforeMount(() => {
         controlPanel="none"
         visualization="2D"
       ></twisty-player>
+      <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @update-twisty-player="updateTwistyPlayerr" />
     </div>
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
@@ -276,5 +281,3 @@ onBeforeMount(() => {
     </div>
   </div>
 </template>
-
-<style scoped></style>
