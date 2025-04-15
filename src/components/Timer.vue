@@ -193,6 +193,7 @@ const smTouch = () => {
 
 const changeScramble = () => {
   getScramble();
+  getScramblee();
 };
 
 const toggle3D = () => {
@@ -202,6 +203,7 @@ const toggle3D = () => {
 onMounted(() => {
   getTimes();
   getScramble();
+  getScramblee();
   window.addEventListener("keyup", onUpEvent);
 });
 
@@ -241,7 +243,7 @@ onBeforeMount(() => {
         controlPanel="none"
         visualization="2D"
       ></twisty-player>
-      <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @update-twisty-player="updateTwistyPlayerr" />
+      <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayerr" />
     </div>
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
