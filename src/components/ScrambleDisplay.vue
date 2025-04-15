@@ -6,10 +6,6 @@ const props = defineProps({
 
 const emit = defineEmits(["toggle-3d", "update-twisty-player"])
 
-const toggle3D = () => {
-  is3D.value = !is3D.value;
-};
-
 </script>
 
 <template>
@@ -20,7 +16,7 @@ const toggle3D = () => {
     <p className="text-xl">{{ is3D ? "3D" : "2D" }}</p>
     <input
       type="checkbox"
-      @click="toggle3D"
+      @click.stop="emit('toggle-3d')"
       defaultChecked
       className="toggle lg:mb-10"
     />
