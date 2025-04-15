@@ -200,10 +200,15 @@ const toggle3D = () => {
   is3D.value = !is3D.value;
 };
 
+const refreshScramble = async () => {
+  await getScramblee();
+  updateTwistyPlayerr();
+}
+
 onMounted(() => {
   getTimes();
   getScramble();
-  getScramblee();
+  refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
 
