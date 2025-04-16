@@ -59,7 +59,7 @@ const insertTimes = async () => {
     {
       user_id: props.session.user.id,
       time: elapsedTime.value,
-      scramble: scramble.value,
+      scramble: scramblee.value,
     },
   ]);
   if (error) {
@@ -100,12 +100,12 @@ const stop = () => {
   props.times.push({
     time: elapsedTime.value,
     solved_at: date,
-    scramble: scramble.value,
+    scramble: scramblee.value,
   });
 
   clearInterval(timer.value);
   insertTimes().then(() => {
-    getScramble()
+    //getScramble()
     refreshScramble();
 });
 };
@@ -149,16 +149,15 @@ const dnf = async () => {
 
 const getScramble = async () => {
   const scrmblObj = await randomScrambleForEvent("333");
-  scramble.value = scrmblObj.toString();
+  //scramble.value = scrmblObj.toString();
   updateTwistyPlayer();
 };
 
 const updateTwistyPlayer = () => {
-  console.log(scramble.value)
   const twistyPlayer = document.querySelectorAll("twisty-player")[0];
-  twistyPlayer.alg = scramble.value;
+  //twistyPlayer.alg = scramble.value;
   const twistyPlayer2 = document.querySelectorAll("twisty-player")[1];
-  twistyPlayer2.alg = scramble.value;
+  //twistyPlayer2.alg = scramble.value;
 };
 
 const onUpEvent = (event) => {
@@ -196,7 +195,7 @@ const smTouch = () => {
 };
 
 const changeScramble = () => {
-  getScramble();
+  //getScramble();
   getScramblee();
 };
 
@@ -211,7 +210,7 @@ const refreshScramble = async () => {
 
 onMounted(() => {
   getTimes();
-  getScramble();
+  //getScramble();
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
