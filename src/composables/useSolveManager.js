@@ -2,14 +2,15 @@ import { ref } from "vue";
 
 import { supabase } from "../supabase";
 
-export function useSolveManager() {
-  const times = ref([])
+export function useSolveManager(userId) {
+  const user_Id = userId
+  const timess = ref([])
 
-  const getLastTime = async (userId) => {
+  const getLastTimee = async () => {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", user_Id)
       .order("id", { ascending: false })
       .limit(1);
     if (error) {
@@ -19,25 +20,25 @@ export function useSolveManager() {
     }
   };
 
-  const getTimes = async (userId) => {
+  const getTimess = async () => {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
-      .eq("user_id", userId);
+      .eq("user_id", user_Id);
     if (error) {
       console.error("Error fetching times", error);
     } else {
-      times.length = 0; // Clear the array first
-      times.push(...data); // Push new data into the empty array
+      timess.value.length = 0; // Clear the array first
+      timess.value.push(...data); // Push new data into the empty array
     }
   };
 
-  const insertTimes = async (isStopped, userId, time, scramble) => {
+  const insertTimess = async (isStopped, time, scramble) => {
     if (!isStopped.value) return;
     console.log("Inserting times", isStopped.value);
     const { error } = await supabase.from("solves").insert([
       {
-        user_id: userId,
+        user_id: user_Id,
         time: time,
         scramble: scramble,
       },
@@ -47,8 +48,8 @@ export function useSolveManager() {
     }
   };
 
-  const plus2 = async () => {
-    const time = props.times[props.times.length - 1].time;
+  const plus22 = async () => {
+    const time = timess.value[timess.value.length - 1].time;
     if (time == "DNF") {
       return;
     } else {
@@ -56,13 +57,13 @@ export function useSolveManager() {
       // Format: time + 2(+)
       // Update the time in the database
       const plustwo = Number(time);
-      props.times[props.times.length - 1].time = (plustwo + 2).toFixed(2);
-      props.times[props.times.length - 1].time += "(+)";
+      timess.value[timess.value.length - 1].time = (plustwo + 2).toFixed(2);
+      timess.value[timess.value.length - 1].time += "(+)";
       const solve = await getLastTime();
       const { error } = await supabase
         .from("solves")
         .update({
-          time: props.times[props.times.length - 1].time,
+          time: timess.value[timess.value.length - 1].time,
           plus_two: true,
         })
         .eq("id", solve[0].id);
@@ -72,8 +73,8 @@ export function useSolveManager() {
     }
   };
 
-  const dnf = async () => {
-    props.times[props.times.length - 1].time = "DNF";
+  const dnff = async () => {
+    timess.value[timess.value.length - 1].time = "DNF";
     const solve = await getLastTime();
     const { error } = await supabase
       .from("solves")
@@ -85,11 +86,11 @@ export function useSolveManager() {
   };
 
   return{
-    times,
-    getLastTime,
-    getTimes,
-    insertTimes,
-    plus2, 
-    dnf,
+    timess,
+    getLastTimee,
+    getTimess,
+    insertTimess,
+    plus22, 
+    dnff,
   }
 }
