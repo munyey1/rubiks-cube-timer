@@ -179,7 +179,7 @@ const smTouch = () => {
 };
 
 const changeScramble = () => {
-  getScramblee();
+  getScramble();
 };
 
 const toggle3D = () => {
