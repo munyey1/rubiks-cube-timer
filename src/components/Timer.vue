@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 
-import { randomScrambleForEvent } from "https://cdn.cubing.net/v0/js/cubing/scramble";
 import { supabase } from "../supabase";
 
 import { calculateAverage } from "../composables/index";
@@ -17,13 +16,12 @@ const props = defineProps({
 const startTime = ref(0);
 const elapsedTime = ref("0.00");
 const timer = ref(null);
-const scramble = ref("");
 const isRunning = ref(false);
 const isStopped = ref(true);
 const isInspection = ref(true);
 const is3D = ref(true);
 
-const { scramblee, getScramblee, updateTwistyPlayerr } = useScramble()
+const { scramble, getScramble, updateTwistyPlayer } = useScramble()
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -59,7 +57,7 @@ const insertTimes = async () => {
     {
       user_id: props.session.user.id,
       time: elapsedTime.value,
-      scramble: scramblee.value,
+      scramble: scramble.value,
     },
   ]);
   if (error) {
@@ -100,12 +98,11 @@ const stop = () => {
   props.times.push({
     time: elapsedTime.value,
     solved_at: date,
-    scramble: scramblee.value,
+    scramble: scramble.value,
   });
 
   clearInterval(timer.value);
   insertTimes().then(() => {
-    //getScramble()
     refreshScramble();
 });
 };
@@ -147,19 +144,6 @@ const dnf = async () => {
   }
 };
 
-const getScramble = async () => {
-  const scrmblObj = await randomScrambleForEvent("333");
-  //scramble.value = scrmblObj.toString();
-  updateTwistyPlayer();
-};
-
-const updateTwistyPlayer = () => {
-  const twistyPlayer = document.querySelectorAll("twisty-player")[0];
-  //twistyPlayer.alg = scramble.value;
-  const twistyPlayer2 = document.querySelectorAll("twisty-player")[1];
-  //twistyPlayer2.alg = scramble.value;
-};
-
 const onUpEvent = (event) => {
   if (event.code === "Space") {
     if (isStopped.value && isInspection.value) {
@@ -195,7 +179,6 @@ const smTouch = () => {
 };
 
 const changeScramble = () => {
-  //getScramble();
   getScramblee();
 };
 
@@ -204,13 +187,12 @@ const toggle3D = () => {
 };
 
 const refreshScramble = async () => {
-  await getScramblee();
-  updateTwistyPlayerr();
+  await getScramble();
+  updateTwistyPlayer();
 }
 
 onMounted(() => {
   getTimes();
-  //getScramble();
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
@@ -226,9 +208,9 @@ onBeforeMount(() => {
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
-    <ScrambleDisplay :scramble="scramblee" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayerr" />
+    <ScrambleDisplay :scramble="scramble" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayer" />
     <div className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl mb-6">{{ scramblee }}</h1>
+      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
         Inspection:
       </h2>
