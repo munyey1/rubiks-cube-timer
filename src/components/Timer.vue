@@ -3,10 +3,12 @@ import { ref, onMounted, onBeforeMount } from "vue";
 
 import { supabase } from "../supabase";
 
-import { calculateAverage } from "../composables/index";
-import { useScramble } from "../composables/useScramble";
 import TimeList from "./TimeList.vue";
 import ScrambleDisplay from "./ScrambleDisplay.vue";
+
+import { calculateAverage } from "../composables/index";
+import { useScramble } from "../composables/useScramble";
+import { useSolveManager } from "../composables/useSolveManager";
 
 const props = defineProps({
   session: Object,
@@ -22,6 +24,7 @@ const isInspection = ref(true);
 const is3D = ref(true);
 
 const { scramble, getScramble, updateTwistyPlayer } = useScramble()
+const { timess, getLastTimee, getTimess, insertTimess, plus22, dnff } = useSolveManager(props.session.user.id)
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -193,6 +196,9 @@ const refreshScramble = async () => {
 
 onMounted(() => {
   getTimes();
+  getTimess().then(() => {
+    console.log(timess.value);
+  })
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
