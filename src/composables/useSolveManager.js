@@ -34,8 +34,9 @@ export function useSolveManager(userId) {
   };
 
   const insertTimess = async (isStopped, time, scramble) => {
-    if (!isStopped.value) return;
-    console.log("Inserting times", isStopped.value);
+    console.log(isStopped, time, scramble)
+    if (!isStopped) return;
+    console.log("Inserting times", isStopped);
     const { error } = await supabase.from("solves").insert([
       {
         user_id: user_Id,

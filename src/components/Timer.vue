@@ -23,8 +23,9 @@ const isStopped = ref(true);
 const isInspection = ref(true);
 const is3D = ref(true);
 
-const { scramble, getScramble, updateTwistyPlayer } = useScramble()
-const { timess, getLastTimee, getTimess, insertTimess, plus22, dnff } = useSolveManager(props.session.user.id)
+const { scramble, getScramble, updateTwistyPlayer } = useScramble();
+const { timess, getLastTimee, getTimess, insertTimess, plus22, dnff } =
+  useSolveManager(props.session.user.id);
 
 const getLastTime = async () => {
   const { data, error } = await supabase
@@ -37,21 +38,6 @@ const getLastTime = async () => {
     console.error("Error fetching last time", error);
   } else {
     return data;
-  }
-};
-
-const insertTimes = async () => {
-  if (!isStopped.value) return;
-  console.log("Inserting times", isStopped.value);
-  const { error } = await supabase.from("solves").insert([
-    {
-      user_id: props.session.user.id,
-      time: elapsedTime.value,
-      scramble: scramble.value,
-    },
-  ]);
-  if (error) {
-    console.error("Error inserting times", error);
   }
 };
 
@@ -92,9 +78,9 @@ const stop = () => {
   });
 
   clearInterval(timer.value);
-  insertTimes().then(() => {
+  insertTimess(isStopped.value, elapsedTime.value, scramble.value).then(() => {
     refreshScramble();
-});
+  });
 };
 
 const plus2 = async () => {
@@ -179,12 +165,12 @@ const toggle3D = () => {
 const refreshScramble = async () => {
   await getScramble();
   updateTwistyPlayer();
-}
+};
 
 onMounted(() => {
   getTimess().then(() => {
     console.log(timess.value);
-  })
+  });
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
@@ -200,7 +186,12 @@ onBeforeMount(() => {
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
-    <ScrambleDisplay :scramble="scramble" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayer" />
+    <ScrambleDisplay
+      :scramble="scramble"
+      :is3D="is3D"
+      @toggle-3d="toggle3D"
+      @update-twisty-player="updateTwistyPlayer"
+    />
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
@@ -212,7 +203,9 @@ onBeforeMount(() => {
       >
         Time:
       </h2>
-      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">{{ elapsedTime }} seconds</h2>
+      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">
+        {{ elapsedTime }} seconds
+      </h2>
       <button
         className="btn mt-4"
         @click="changeScramble"
