@@ -40,19 +40,6 @@ const getLastTime = async () => {
   }
 };
 
-const getTimes = async () => {
-  const { data, error } = await supabase
-    .from("solves")
-    .select("*")
-    .eq("user_id", props.session.user.id);
-  if (error) {
-    console.error("Error fetching times", error);
-  } else {
-    props.times.length = 0; // Clear the array first
-    props.times.push(...data); // Push new data into the empty array
-  }
-};
-
 const insertTimes = async () => {
   if (!isStopped.value) return;
   console.log("Inserting times", isStopped.value);
@@ -195,7 +182,6 @@ const refreshScramble = async () => {
 }
 
 onMounted(() => {
-  getTimes();
   getTimess().then(() => {
     console.log(timess.value);
   })
@@ -248,7 +234,7 @@ onBeforeMount(() => {
         <p>Average of last 5: {{ calAvg(5) }}</p>
         <p>Average of last 12: {{ calAvg(12) }}</p>
         <p className="text-lg mt-10 ">Times:</p>
-        <TimeList className="overflow-y-auto h-96" :times="times" />
+        <TimeList className="overflow-y-auto h-96" :times="timess" />
       </div>
     </div>
   </div>
