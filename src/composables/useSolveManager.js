@@ -1,16 +1,20 @@
 import { ref } from "vue";
-
 import { supabase } from "../supabase";
 
+const solveManagers = new Map();
+
 export function useSolveManager(userId) {
-  const user_Id = userId
-  const timess = ref([])
+  if (solveManagers.has(userId)) {
+    return solveManagers.get(userId);
+  }
+
+  const timess = ref([]);
 
   const getLastTimee = async () => {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
-      .eq("user_id", user_Id)
+      .eq("user_id", userId)
       .order("id", { ascending: false })
       .limit(1);
     if (error) {
@@ -24,7 +28,7 @@ export function useSolveManager(userId) {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
-      .eq("user_id", user_Id);
+      .eq("user_id", userId);
     if (error) {
       console.error("Error fetching times", error);
     } else {
@@ -34,12 +38,12 @@ export function useSolveManager(userId) {
   };
 
   const insertTimess = async (isStopped, time, scramble) => {
-    console.log(isStopped, time, scramble)
+    console.log(isStopped, time, scramble);
     if (!isStopped) return;
     console.log("Inserting times", isStopped);
     const { error } = await supabase.from("solves").insert([
       {
-        user_id: user_Id,
+        user_id: userId,
         time: time,
         scramble: scramble,
       },
@@ -86,12 +90,15 @@ export function useSolveManager(userId) {
     }
   };
 
-  return{
+  const solveManager = {
     timess,
     getLastTimee,
     getTimess,
     insertTimess,
-    plus22, 
+    plus22,
     dnff,
-  }
+  };
+
+  solveManagers.set(userId, solveManager);
+  return solveManager;
 }
