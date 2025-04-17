@@ -71,11 +71,11 @@ const stop = () => {
 
   const date = new Date(Date.now()).toISOString();
 
-  props.times.push({
+  timess.value.push({
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
-  });
+  })
 
   clearInterval(timer.value);
   insertTimess(isStopped.value, elapsedTime.value, scramble.value).then(() => {
@@ -168,9 +168,7 @@ const refreshScramble = async () => {
 };
 
 onMounted(() => {
-  getTimess().then(() => {
-    console.log(timess.value);
-  });
+  getTimess();
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
@@ -214,10 +212,10 @@ onBeforeMount(() => {
         Change Scramble
       </button>
       <div className="mt-12">
-        <button className="btn w-20" @click="plus2" :disabled="isRunning">
+        <button className="btn w-20" @click="plus22" :disabled="isRunning">
           +2
         </button>
-        <button className="btn w-20" @click="dnf" :disabled="isRunning">
+        <button className="btn w-20" @click="dnff" :disabled="isRunning">
           DNF
         </button>
       </div>

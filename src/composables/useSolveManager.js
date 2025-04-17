@@ -64,7 +64,7 @@ export function useSolveManager(userId) {
       const plustwo = Number(time);
       timess.value[timess.value.length - 1].time = (plustwo + 2).toFixed(2);
       timess.value[timess.value.length - 1].time += "(+)";
-      const solve = await getLastTime();
+      const solve = await getLastTimee();
       const { error } = await supabase
         .from("solves")
         .update({
@@ -80,7 +80,7 @@ export function useSolveManager(userId) {
 
   const dnff = async () => {
     timess.value[timess.value.length - 1].time = "DNF";
-    const solve = await getLastTime();
+    const solve = await getLastTimee();
     const { error } = await supabase
       .from("solves")
       .update({ time: "DNF", dnf: true })
