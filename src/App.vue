@@ -51,7 +51,7 @@ onMounted(() => {
         aria-label="Data"
       />
       <div role="tabpanel" className="tab-content lg:p-10">
-        <DataComponent :session="session" :times="times" />
+        <DataComponent :session="session" />
       </div>
     </div>
     <div>
