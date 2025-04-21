@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 
-import { supabase } from "../supabase";
-
 import TimeList from "./TimeList.vue";
 import ScrambleDisplay from "./ScrambleDisplay.vue";
 
