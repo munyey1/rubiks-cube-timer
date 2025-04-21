@@ -24,22 +24,9 @@ const isInspection = ref(true);
 const is3D = ref(true);
 
 const { scramble, getScramble, updateTwistyPlayer } = useScramble();
-const { timess, getLastTimee, getTimess, insertTimess, plus22, dnff } =
-  useSolveManager(props.session.user.id);
-
-const getLastTime = async () => {
-  const { data, error } = await supabase
-    .from("solves")
-    .select("*")
-    .eq("user_id", props.session.user.id)
-    .order("id", { ascending: false })
-    .limit(1);
-  if (error) {
-    console.error("Error fetching last time", error);
-  } else {
-    return data;
-  }
-};
+const { timess, getTimess, insertTimess, plus22, dnff } = useSolveManager(
+  props.session.user.id
+);
 
 const inspection = () => {
   startTime.value = 15;
@@ -75,49 +62,12 @@ const stop = () => {
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
-  })
+  });
 
   clearInterval(timer.value);
   insertTimess(isStopped.value, elapsedTime.value, scramble.value).then(() => {
     refreshScramble();
   });
-};
-
-const plus2 = async () => {
-  const time = props.times[props.times.length - 1].time;
-  if (time == "DNF") {
-    return;
-  } else {
-    // Add 2 seconds to the last time
-    // Format: time + 2(+)
-    // Update the time in the database
-    const plustwo = Number(time);
-    props.times[props.times.length - 1].time = (plustwo + 2).toFixed(2);
-    props.times[props.times.length - 1].time += "(+)";
-    const solve = await getLastTime();
-    const { error } = await supabase
-      .from("solves")
-      .update({
-        time: props.times[props.times.length - 1].time,
-        plus_two: true,
-      })
-      .eq("id", solve[0].id);
-    if (error) {
-      console.error("Error updating plus two", error);
-    }
-  }
-};
-
-const dnf = async () => {
-  props.times[props.times.length - 1].time = "DNF";
-  const solve = await getLastTime();
-  const { error } = await supabase
-    .from("solves")
-    .update({ time: "DNF", dnf: true })
-    .eq("id", solve[0].id);
-  if (error) {
-    console.error("Error updating DNF", error);
-  }
 };
 
 const onUpEvent = (event) => {
