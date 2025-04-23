@@ -7,23 +7,25 @@ import ScrambleDisplay from "./ScrambleDisplay.vue";
 import { calculateAverage } from "../composables/index";
 import { useScramble } from "../composables/useScramble";
 import { useSolveManager } from "../composables/useSolveManager";
+import { useTimer } from "../composables/useTimer"
 
 const props = defineProps({
   session: Object,
 });
 
-const startTime = ref(0);
-const elapsedTime = ref("0.00");
-const timer = ref(null);
-const isRunning = ref(false);
-const isStopped = ref(true);
-const isInspection = ref(true);
 const is3D = ref(true);
 
 const { scramble, getScramble, updateTwistyPlayer } = useScramble();
 const { times, getTimes, insertTimes, plus2, dnf } = useSolveManager(
   props.session.user.id
 );
+
+const refreshScramble = async () => {
+  await getScramble();
+  updateTwistyPlayer();
+};
+
+const { startTime, elapsedTime, timer, isRunning, isStopped, isInspection } = useTimer(times, insertTimes, refreshScramble)
 
 const inspection = () => {
   startTime.value = 15;
@@ -107,11 +109,6 @@ const changeScramble = () => {
 
 const toggle3D = () => {
   is3D.value = !is3D.value;
-};
-
-const refreshScramble = async () => {
-  await getScramble();
-  updateTwistyPlayer();
 };
 
 onMounted(() => {
