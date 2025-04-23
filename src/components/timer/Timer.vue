@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 
-import TimeList from "./TimeList.vue";
+import TimeList from "../TimeList.vue";
 import ScrambleDisplay from "./ScrambleDisplay.vue";
 
-import { calculateAverage } from "../composables/index";
-import { useScramble } from "../composables/useScramble";
-import { useSolveManager } from "../composables/useSolveManager";
-import { useTimer } from "../composables/useTimer";
+import { calculateAverage } from "../../composables/index";
+import { useScramble } from "../../composables/useScramble";
+import { useSolveManager } from "../../composables/useSolveManager";
+import { useTimer } from "../../composables/useTimer";
 
 const props = defineProps({
   session: Object,
