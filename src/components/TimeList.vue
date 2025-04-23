@@ -22,11 +22,16 @@ const label = (time) => {
     " " +
     date.getDate() +
     "/" +
-    date.getMonth() +
+    (date.getMonth() + 1) +
     "/" +
     date.getFullYear()
   );
 };
+
+const test = (time) => {
+  const date = new Date(time);
+  return date.getMonth()
+}
 </script>
 
 <template>

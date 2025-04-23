@@ -47,7 +47,7 @@ const labels = computed(() => {
       " " +
       date.getDate() +
       "/" +
-      date.getMonth() +
+      (date.getMonth() + 1) +
       "/" +
       date.getFullYear();
     return label;

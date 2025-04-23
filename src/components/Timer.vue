@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, onBeforeMount } from "vue";
 
-import { supabase } from "../supabase";
-
 import TimeList from "./TimeList.vue";
 import ScrambleDisplay from "./ScrambleDisplay.vue";
 
@@ -12,7 +10,6 @@ import { useSolveManager } from "../composables/useSolveManager";
 
 const props = defineProps({
   session: Object,
-  times: Array,
 });
 
 const startTime = ref(0);
@@ -23,50 +20,10 @@ const isStopped = ref(true);
 const isInspection = ref(true);
 const is3D = ref(true);
 
-const { scramble, getScramble, updateTwistyPlayer } = useScramble()
-const { timess, getLastTimee, getTimess, insertTimess, plus22, dnff } = useSolveManager(props.session.user.id)
-
-const getLastTime = async () => {
-  const { data, error } = await supabase
-    .from("solves")
-    .select("*")
-    .eq("user_id", props.session.user.id)
-    .order("id", { ascending: false })
-    .limit(1);
-  if (error) {
-    console.error("Error fetching last time", error);
-  } else {
-    return data;
-  }
-};
-
-const getTimes = async () => {
-  const { data, error } = await supabase
-    .from("solves")
-    .select("*")
-    .eq("user_id", props.session.user.id);
-  if (error) {
-    console.error("Error fetching times", error);
-  } else {
-    props.times.length = 0; // Clear the array first
-    props.times.push(...data); // Push new data into the empty array
-  }
-};
-
-const insertTimes = async () => {
-  if (!isStopped.value) return;
-  console.log("Inserting times", isStopped.value);
-  const { error } = await supabase.from("solves").insert([
-    {
-      user_id: props.session.user.id,
-      time: elapsedTime.value,
-      scramble: scramble.value,
-    },
-  ]);
-  if (error) {
-    console.error("Error inserting times", error);
-  }
-};
+const { scramble, getScramble, updateTwistyPlayer } = useScramble();
+const { times, getTimes, insertTimes, plus2, dnf } = useSolveManager(
+  props.session.user.id
+);
 
 const inspection = () => {
   startTime.value = 15;
@@ -98,53 +55,16 @@ const stop = () => {
 
   const date = new Date(Date.now()).toISOString();
 
-  props.times.push({
+  times.value.push({
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
   });
 
   clearInterval(timer.value);
-  insertTimes().then(() => {
+  insertTimes(isStopped.value, elapsedTime.value, scramble.value).then(() => {
     refreshScramble();
-});
-};
-
-const plus2 = async () => {
-  const time = props.times[props.times.length - 1].time;
-  if (time == "DNF") {
-    return;
-  } else {
-    // Add 2 seconds to the last time
-    // Format: time + 2(+)
-    // Update the time in the database
-    const plustwo = Number(time);
-    props.times[props.times.length - 1].time = (plustwo + 2).toFixed(2);
-    props.times[props.times.length - 1].time += "(+)";
-    const solve = await getLastTime();
-    const { error } = await supabase
-      .from("solves")
-      .update({
-        time: props.times[props.times.length - 1].time,
-        plus_two: true,
-      })
-      .eq("id", solve[0].id);
-    if (error) {
-      console.error("Error updating plus two", error);
-    }
-  }
-};
-
-const dnf = async () => {
-  props.times[props.times.length - 1].time = "DNF";
-  const solve = await getLastTime();
-  const { error } = await supabase
-    .from("solves")
-    .update({ time: "DNF", dnf: true })
-    .eq("id", solve[0].id);
-  if (error) {
-    console.error("Error updating DNF", error);
-  }
+  });
 };
 
 const onUpEvent = (event) => {
@@ -164,7 +84,7 @@ const onUpEvent = (event) => {
 };
 
 const calAvg = (num) => {
-  return calculateAverage(num, props.times);
+  return calculateAverage(num, times.value);
 };
 
 const smTouch = () => {
@@ -192,13 +112,10 @@ const toggle3D = () => {
 const refreshScramble = async () => {
   await getScramble();
   updateTwistyPlayer();
-}
+};
 
 onMounted(() => {
   getTimes();
-  getTimess().then(() => {
-    console.log(timess.value);
-  })
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
@@ -214,7 +131,12 @@ onBeforeMount(() => {
       v-if="isRunning || (!isInspection && !isRunning)"
       className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-10"
     ></div>
-    <ScrambleDisplay :scramble="scramble" :is3D="is3D" @toggle-3d="toggle3D" @update-twisty-player="updateTwistyPlayer" />
+    <ScrambleDisplay
+      :scramble="scramble"
+      :is3D="is3D"
+      @toggle-3d="toggle3D"
+      @update-twisty-player="updateTwistyPlayer"
+    />
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl mb-6">{{ scramble }}</h1>
       <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
@@ -226,7 +148,9 @@ onBeforeMount(() => {
       >
         Time:
       </h2>
-      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">{{ elapsedTime }} seconds</h2>
+      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">
+        {{ elapsedTime }} seconds
+      </h2>
       <button
         className="btn mt-4"
         @click="changeScramble"
