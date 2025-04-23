@@ -7,7 +7,7 @@ import ScrambleDisplay from "./ScrambleDisplay.vue";
 import { calculateAverage } from "../composables/index";
 import { useScramble } from "../composables/useScramble";
 import { useSolveManager } from "../composables/useSolveManager";
-import { useTimer } from "../composables/useTimer"
+import { useTimer } from "../composables/useTimer";
 
 const props = defineProps({
   session: Object,
@@ -25,49 +25,8 @@ const refreshScramble = async () => {
   updateTwistyPlayer();
 };
 
-const { startTime, elapsedTime, timer, isRunning, isStopped, isInspection } = useTimer(times, insertTimes, refreshScramble)
-
-const inspection = () => {
-  startTime.value = 15;
-  timer.value = setInterval(() => {
-    elapsedTime.value = (startTime.value -= 0.01).toFixed(2).toString();
-    isInspection.value = false;
-    if (startTime.value <= 0) {
-      clearInterval(timer.value);
-      stop();
-    }
-  }, 10);
-};
-
-const start = () => {
-  isStopped.value = false;
-  isRunning.value = true;
-  startTime.value = Date.now() - elapsedTime.value * 1000;
-  timer.value = setInterval(() => {
-    elapsedTime.value = ((Date.now() - startTime.value) / 1000)
-      .toFixed(2)
-      .toString();
-  }, 10);
-};
-
-const stop = () => {
-  isStopped.value = true;
-  isRunning.value = false;
-  isInspection.value = true;
-
-  const date = new Date(Date.now()).toISOString();
-
-  times.value.push({
-    time: elapsedTime.value,
-    solved_at: date,
-    scramble: scramble.value,
-  });
-
-  clearInterval(timer.value);
-  insertTimes(isStopped.value, elapsedTime.value, scramble.value).then(() => {
-    refreshScramble();
-  });
-};
+const { elapsedTime, timer, isRunning, isStopped, isInspection, inspection, start, stop } =
+  useTimer(times, insertTimes, scramble, refreshScramble);
 
 const onUpEvent = (event) => {
   if (event.code === "Space") {

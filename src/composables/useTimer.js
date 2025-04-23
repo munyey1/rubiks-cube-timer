@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-export function useTimer(times, insertTimes, refreshScramble) {
+export function useTimer(times, insertTimes, scramble, refreshScramble) {
   const startTime = ref(0);
   const elapsedTime = ref("0.00");
   const timer = ref(null);
@@ -32,6 +32,7 @@ export function useTimer(times, insertTimes, refreshScramble) {
   };
 
   const stop = () => {
+    console.log(scramble.value)
     isStopped.value = true;
     isRunning.value = false;
     isInspection.value = true;
