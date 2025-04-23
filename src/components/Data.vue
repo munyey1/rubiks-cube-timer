@@ -15,10 +15,10 @@ const props = defineProps({
 
 const lineFilter = ref(0);
 
-const { timess, getTimess } = useSolveManager(props.session.user.id)
+const { times, getTimes } = useSolveManager(props.session.user.id)
 
 onMounted(() => {
-  getTimess();
+  getTimes();
 })
 </script>
 
@@ -27,13 +27,13 @@ onMounted(() => {
     <div className="container lg:col-span-2 flex flex-col items-center">
       <LineFilter v-model="lineFilter" className="mt-2" />
       <LineChart
-        :times="timess"
+        :times="times"
         :lineFilter="Number(lineFilter)"
         className="mt-2"
       />
       <div className="w-full mt-10 lg:w-1/2">
         <DoughnutChart
-          :times="timess"
+          :times="times"
           className="justify-self-center mt-4"
         />
       </div>
@@ -41,9 +41,9 @@ onMounted(() => {
 
     <div className="flex">
       <div className="lg:fixed p-6">
-        <SummaryStats className="mt-4" :times="timess" />
+        <SummaryStats className="mt-4" :times="times" />
         <h2 className="text-lg mt-6">Times:</h2>
-        <TimeList className="overflow-y-auto h-96" :times="timess" />
+        <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
     </div>
   </div>

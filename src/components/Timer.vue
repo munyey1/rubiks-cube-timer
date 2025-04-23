@@ -10,7 +10,6 @@ import { useSolveManager } from "../composables/useSolveManager";
 
 const props = defineProps({
   session: Object,
-  times: Array,
 });
 
 const startTime = ref(0);
@@ -22,7 +21,7 @@ const isInspection = ref(true);
 const is3D = ref(true);
 
 const { scramble, getScramble, updateTwistyPlayer } = useScramble();
-const { timess, getTimess, insertTimess, plus22, dnff } = useSolveManager(
+const { times, getTimes, insertTimes, plus2, dnf } = useSolveManager(
   props.session.user.id
 );
 
@@ -56,14 +55,14 @@ const stop = () => {
 
   const date = new Date(Date.now()).toISOString();
 
-  timess.value.push({
+  times.value.push({
     time: elapsedTime.value,
     solved_at: date,
     scramble: scramble.value,
   });
 
   clearInterval(timer.value);
-  insertTimess(isStopped.value, elapsedTime.value, scramble.value).then(() => {
+  insertTimes(isStopped.value, elapsedTime.value, scramble.value).then(() => {
     refreshScramble();
   });
 };
@@ -85,7 +84,7 @@ const onUpEvent = (event) => {
 };
 
 const calAvg = (num) => {
-  return calculateAverage(num, props.times);
+  return calculateAverage(num, times.value);
 };
 
 const smTouch = () => {
@@ -116,7 +115,7 @@ const refreshScramble = async () => {
 };
 
 onMounted(() => {
-  getTimess();
+  getTimes();
   refreshScramble();
   window.addEventListener("keyup", onUpEvent);
 });
@@ -160,10 +159,10 @@ onBeforeMount(() => {
         Change Scramble
       </button>
       <div className="mt-12">
-        <button className="btn w-20" @click="plus22" :disabled="isRunning">
+        <button className="btn w-20" @click="plus2" :disabled="isRunning">
           +2
         </button>
-        <button className="btn w-20" @click="dnff" :disabled="isRunning">
+        <button className="btn w-20" @click="dnf" :disabled="isRunning">
           DNF
         </button>
       </div>
@@ -173,7 +172,7 @@ onBeforeMount(() => {
         <p>Average of last 5: {{ calAvg(5) }}</p>
         <p>Average of last 12: {{ calAvg(12) }}</p>
         <p className="text-lg mt-10 ">Times:</p>
-        <TimeList className="overflow-y-auto h-96" :times="timess" />
+        <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
     </div>
   </div>

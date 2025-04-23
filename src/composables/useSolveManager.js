@@ -8,9 +8,9 @@ export function useSolveManager(userId) {
     return solveManagers.get(userId);
   }
 
-  const timess = ref([]);
+  const times = ref([]);
 
-  const getLastTimee = async () => {
+  const getLastTime = async () => {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
@@ -24,7 +24,7 @@ export function useSolveManager(userId) {
     }
   };
 
-  const getTimess = async () => {
+  const getTimes = async () => {
     const { data, error } = await supabase
       .from("solves")
       .select("*")
@@ -32,12 +32,12 @@ export function useSolveManager(userId) {
     if (error) {
       console.error("Error fetching times", error);
     } else {
-      timess.value.length = 0; // Clear the array first
-      timess.value.push(...data); // Push new data into the empty array
+      times.value.length = 0; // Clear the array first
+      times.value.push(...data); // Push new data into the empty array
     }
   };
 
-  const insertTimess = async (isStopped, time, scramble) => {
+  const insertTimes = async (isStopped, time, scramble) => {
     console.log(isStopped, time, scramble);
     if (!isStopped) return;
     console.log("Inserting times", isStopped);
@@ -53,8 +53,8 @@ export function useSolveManager(userId) {
     }
   };
 
-  const plus22 = async () => {
-    const time = timess.value[timess.value.length - 1].time;
+  const plus2 = async () => {
+    const time = times.value[times.value.length - 1].time;
     if (time == "DNF") {
       return;
     } else {
@@ -62,13 +62,13 @@ export function useSolveManager(userId) {
       // Format: time + 2(+)
       // Update the time in the database
       const plustwo = Number(time);
-      timess.value[timess.value.length - 1].time = (plustwo + 2).toFixed(2);
-      timess.value[timess.value.length - 1].time += "(+)";
-      const solve = await getLastTimee();
+      times.value[times.value.length - 1].time = (plustwo + 2).toFixed(2);
+      times.value[times.value.length - 1].time += "(+)";
+      const solve = await getLastTime();
       const { error } = await supabase
         .from("solves")
         .update({
-          time: timess.value[timess.value.length - 1].time,
+          time: times.value[times.value.length - 1].time,
           plus_two: true,
         })
         .eq("id", solve[0].id);
@@ -78,9 +78,9 @@ export function useSolveManager(userId) {
     }
   };
 
-  const dnff = async () => {
-    timess.value[timess.value.length - 1].time = "DNF";
-    const solve = await getLastTimee();
+  const dnf = async () => {
+    times.value[times.value.length - 1].time = "DNF";
+    const solve = await getLastTime();
     const { error } = await supabase
       .from("solves")
       .update({ time: "DNF", dnf: true })
@@ -91,12 +91,12 @@ export function useSolveManager(userId) {
   };
 
   const solveManager = {
-    timess,
-    getLastTimee,
-    getTimess,
-    insertTimess,
-    plus22,
-    dnff,
+    times,
+    getLastTime,
+    getTimes,
+    insertTimes,
+    plus2,
+    dnf,
   };
 
   solveManagers.set(userId, solveManager);
