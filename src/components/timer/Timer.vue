@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeMount } from "vue";
 
 import TimeList from "../TimeList.vue";
 import ScrambleDisplay from "./ScrambleDisplay.vue";
+import TimerDisplay from "./TimerDisplay.vue";
 
 import { calculateAverage } from "../../composables/index";
 import { useScramble } from "../../composables/useScramble";
@@ -93,36 +94,16 @@ onBeforeMount(() => {
       @toggle-3d="toggle3D"
       @update-twisty-player="updateTwistyPlayer"
     />
-    <div className="flex flex-col items-center justify-center">
-      <h1 className="text-2xl mb-6">{{ scramble }}</h1>
-      <h2 className="text-5xl mt-36 z-10" v-if="!isInspection && !isRunning">
-        Inspection:
-      </h2>
-      <h2
-        className="text-5xl lg:mt-36 mt-20 z-10"
-        v-if="isRunning || isInspection"
-      >
-        Time:
-      </h2>
-      <h2 @click="smTouch" className="text-5xl mb-28 z-10 cursor-pointer">
-        {{ elapsedTime }} seconds
-      </h2>
-      <button
-        className="btn mt-4"
-        @click="changeScramble"
-        :disabled="isRunning"
-      >
-        Change Scramble
-      </button>
-      <div className="mt-12">
-        <button className="btn w-20" @click="plus2" :disabled="isRunning">
-          +2
-        </button>
-        <button className="btn w-20" @click="dnf" :disabled="isRunning">
-          DNF
-        </button>
-      </div>
-    </div>
+    <TimerDisplay
+      :scramble="scramble"
+      :isInspection="isInspection"
+      :isRunning="isRunning"
+      :elapsedTime="elapsedTime"
+      @change-scramble="changeScramble"
+      @plus-2="plus2"
+      @dnf="dnf"
+      @sm-touch="smTouch"
+    />
     <div className="flex items-center">
       <div className="p-6">
         <p>Average of last 5: {{ calAvg(5) }}</p>
