@@ -4,8 +4,8 @@ import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
 import Login from "./components/Login.vue";
-import Timer from "./components/Timer.vue";
-import DataComponent from "./components/Data.vue";
+import Timer from "./components/timer/Timer.vue";
+import DataComponent from "./components/data/Data.vue";
 
 const session = ref();
 const times = ref([]);

@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-import { useSolveManager } from "../composables/useSolveManager";
+import { useSolveManager } from "../../composables/useSolveManager";
 
-import LineFilter from "./charts/LineFilter.vue";
-import LineChart from "./charts/LineChart.vue";
-import DoughnutChart from "./charts/DoughnutChart.vue";
+import LineFilter from "../charts/LineFilter.vue";
+import LineChart from "../charts/LineChart.vue";
+import DoughnutChart from "../charts/DoughnutChart.vue";
 import SummaryStats from "./SummaryStats.vue";
-import TimeList from "./TimeList.vue";
+import TimeList from "../TimeList.vue";
 
 const props = defineProps({
   session: Object,
