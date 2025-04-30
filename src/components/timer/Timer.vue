@@ -45,10 +45,6 @@ const onUpEvent = (event) => {
   }
 };
 
-const calAvg = (num) => {
-  return calculateAverage(num, times.value);
-};
-
 const smTouch = () => {
   if (isStopped.value && isInspection.value) {
     inspection();
@@ -61,10 +57,6 @@ const smTouch = () => {
     clearInterval(timer.value);
     start();
   }
-};
-
-const changeScramble = () => {
-  getScramble();
 };
 
 const toggle3D = () => {
@@ -99,15 +91,15 @@ onBeforeMount(() => {
       :isInspection="isInspection"
       :isRunning="isRunning"
       :elapsedTime="elapsedTime"
-      @change-scramble="changeScramble"
+      @get-scramble="getScramble"
       @plus-2="plus2"
       @dnf="dnf"
       @sm-touch="smTouch"
     />
     <div className="flex items-center">
       <div className="p-6">
-        <p>Average of last 5: {{ calAvg(5) }}</p>
-        <p>Average of last 12: {{ calAvg(12) }}</p>
+        <p>Average of last 5: {{ calculateAverage(5, times) }}</p>
+        <p>Average of last 12: {{ calculateAverage(12, times) }}</p>
         <p className="text-lg mt-10 ">Times:</p>
         <TimeList className="overflow-y-auto h-96" :times="times" />
       </div>
