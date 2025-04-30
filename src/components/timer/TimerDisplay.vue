@@ -6,7 +6,7 @@ const props = defineProps({
   elapsedTime: String,
 })
 
-const emit = defineEmits(["change-scramble", "plus-2", "dnf", "sm-touch"])
+const emit = defineEmits(["get-scramble", "plus-2", "dnf", "sm-touch"])
 
 </script>
 
@@ -25,7 +25,7 @@ const emit = defineEmits(["change-scramble", "plus-2", "dnf", "sm-touch"])
     <h2 @click="emit('smTouch')" className="text-5xl mb-28 z-10 cursor-pointer">
       {{ elapsedTime }} seconds
     </h2>
-    <button className="btn mt-4" @click="emit('change-scramble')" :disabled="isRunning">
+    <button className="btn mt-4" @click="emit('get-scramble')" :disabled="isRunning">
       Change Scramble
     </button>
     <div className="mt-12">
