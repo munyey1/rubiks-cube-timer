@@ -4,8 +4,8 @@ import { supabase } from "./supabase";
 
 import Auth from "./components/Auth.vue";
 import Login from "./components/Login.vue";
-import Timer from "./components/Timer.vue";
-import DataComponent from "./components/Data.vue";
+import Timer from "./components/timer/Timer.vue";
+import DataComponent from "./components/data/Data.vue";
 
 const session = ref();
 const times = ref([]);
@@ -20,17 +20,6 @@ onMounted(() => {
   });
 });
 
-const logout = async () => {
-  if (!session.value) {
-    console.warn("No session to log out from.");
-    return;
-  }
-
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("Error logging out:", error.message);
-  }
-};
 </script>
 
 <template>
@@ -51,7 +40,7 @@ const logout = async () => {
         defaultChecked
       />
       <div role="tabpanel" className="tab-content lg:p-10">
-        <Timer :session="session" :times="times" />
+        <Timer :session="session" />
       </div>
 
       <input
@@ -62,7 +51,7 @@ const logout = async () => {
         aria-label="Data"
       />
       <div role="tabpanel" className="tab-content lg:p-10">
-        <DataComponent :session="session" :times="times" />
+        <DataComponent :session="session" />
       </div>
     </div>
     <div>

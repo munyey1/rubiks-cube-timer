@@ -47,7 +47,7 @@ const labels = computed(() => {
       " " +
       date.getDate() +
       "/" +
-      date.getMonth() +
+      (date.getMonth() + 1) +
       "/" +
       date.getFullYear();
     return label;
@@ -100,6 +100,7 @@ const lineOptions = {
         color: "white",
       },
     },
+    /*
     annotation: {
       annotations: {
         line1: {
@@ -111,7 +112,7 @@ const lineOptions = {
           borderDash: [6, 6],
         },
       },
-    },
+    },*/
   },
   scales: {
     x: {
