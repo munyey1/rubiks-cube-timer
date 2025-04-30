@@ -100,6 +100,7 @@ const lineOptions = {
         color: "white",
       },
     },
+    /*
     annotation: {
       annotations: {
         line1: {
@@ -111,7 +112,7 @@ const lineOptions = {
           borderDash: [6, 6],
         },
       },
-    },
+    },*/
   },
   scales: {
     x: {
